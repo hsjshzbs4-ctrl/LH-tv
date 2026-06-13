@@ -1,0 +1,73 @@
+{
+  "name": "lh-tv",
+  "version": "2.0.0",
+  "description": "LH 影视 — Electron 桌面影视应用，支持在线播放和本地下载",
+  "main": "./out/main/index.js",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build && node scripts/copy-shared.js",
+    "preview": "electron-vite preview",
+    "dist": "electron-vite build && node scripts/copy-shared.js && electron-builder --win",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "test:unit": "vitest run tests/unit",
+    "test:integration": "vitest run tests/integration",
+    "test:architecture": "vitest run tests/architecture",
+    "test:stress": "vitest run tests/stress",
+    "test:ci": "vitest run --coverage",
+    "test:rc": "npm run typecheck && npm run build && vitest run --coverage && playwright test"
+  },
+  "dependencies": {
+    "electron-updater": "^6.3.9",
+    "hls.js": "^1.5.17",
+    "pinia": "^3.0.2",
+    "pinia-plugin-persistedstate": "^4.7.1",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.50.1",
+    "@vitejs/plugin-vue": "^5.2.1",
+    "@vitest/coverage-v8": "^4.1.8",
+    "@vue/test-utils": "^2.4.11",
+    "electron": "^34.3.0",
+    "electron-builder": "^25.1.8",
+    "electron-vite": "^3.0.0",
+    "happy-dom": "^20.10.3",
+    "jsdom": "^29.1.1",
+    "madge": "^8.0.0",
+    "puppeteer-core": "^24.2.0",
+    "typescript": "^5.7.3",
+    "vitest": "^4.1.8",
+    "vue-tsc": "^2.2.0"
+  },
+  "build": {
+    "appId": "com.lh.tv",
+    "productName": "LH",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "out/**/*",
+      "resources/**/*",
+      "electron/shared-legacy/**/*",
+      "jp-movie-catalog.json",
+      "kr-movie-catalog.json"
+    ],
+    "extraResources": [
+      {
+        "from": "resources/",
+        "to": "resources/"
+      }
+    ],
+    "asar": true,
+    "win": {
+      "icon": "resources/icon.ico",
+      "target": "portable",
+      "verifyUpdateCodeSignature": false
+    }
+  }
+}

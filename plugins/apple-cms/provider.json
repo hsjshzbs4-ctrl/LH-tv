@@ -1,0 +1,9 @@
+{
+  "id": "apple-cms",
+  "name": "AppleCMS",
+  "version": "1.0.0",
+  "author": "LH-TV",
+  "description": "通用 AppleCMS 视频站 Provider",
+  "priority": 100,
+  "entry": "index.ts"
+}

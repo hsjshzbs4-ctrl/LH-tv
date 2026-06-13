@@ -1,0 +1,9 @@
+{
+  "id": "anime-provider",
+  "name": "AnimeProvider",
+  "version": "1.0.0",
+  "author": "LH-TV",
+  "description": "动漫爬虫 Provider",
+  "priority": 200,
+  "entry": "index.ts"
+}

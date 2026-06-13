@@ -1,0 +1,34 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"D:\\\\L-H\\\\LH-TV\" -Depth 1)",
+      "Bash(Format-Table Name, PSIsContainer -AutoSize)",
+      "PowerShell(Get-ChildItem -Path \"D:\\\\L-H\\\\LH-TV\" -Directory | Where-Object { $_.Name -eq 'shared-legacy' } | ForEach-Object { $_.FullName }; Get-ChildItem -Path \"D:\\\\L-H\\\\LH-TV\\\\electron\" -Directory | Where-Object { $_.Name -eq 'shared-legacy' } | ForEach-Object { $_.FullName }; Get-ChildItem -Path \"D:\\\\L-H\\\\LH-TV\\\\out\" -Directory | Where-Object { $_.Name -eq 'shared-legacy' } | ForEach-Object { $_.FullName })",
+      "PowerShell(\\(Get-ChildItem -Path \"D:\\\\L-H\\\\LH-TV\\\\data\\\\posters\" -File | Measure-Object\\).Count)",
+      "PowerShell(Get-Process *)",
+      "PowerShell($env:LH_DATA_DIR = \"D:\\\\L-H\\\\LH-TV\\\\data\"; cd D:\\\\L-H\\\\LH-TV; node scripts\\\\fetch-missing-posters.js 2>&1)",
+      "Bash(grep -q \"完成\" \"C:\\\\\\\\Users\\\\\\\\Lin\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\claude\\\\\\\\D--L-H-LH-TV\\\\\\\\66757a89-8f68-4745-b261-e1154c7e7384\\\\\\\\tasks\\\\\\\\b9znm4z5s.output\")",
+      "Bash(tail -5 \"C:\\\\\\\\Users\\\\\\\\Lin\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\claude\\\\\\\\D--L-H-LH-TV\\\\\\\\66757a89-8f68-4745-b261-e1154c7e7384\\\\\\\\tasks\\\\\\\\b9znm4z5s.output\")",
+      "WebSearch",
+      "PowerShell($env:LH_DATA_DIR = \"D:\\\\L-H\\\\LH-TV\\\\data\"; cd D:\\\\L-H\\\\LH-TV; node scripts\\\\check-posters.js 2>&1)",
+      "PowerShell($env:LH_DATA_DIR = \"D:\\\\L-H\\\\LH-TV\\\\data\"; cd D:\\\\L-H\\\\LH-TV; node scripts\\\\list-missing.js 2>&1)",
+      "mcp__plugin_context7_context7__resolve-library-id",
+      "mcp__plugin_context7_context7__query-docs",
+      "Bash(git diff *)",
+      "Bash(ls -lt \"D:\\\\L-H\\\\LH-TV\\\\electron\\\\shared-legacy\\\\poster-fetcher.js\" \"D:\\\\L-H\\\\LH-TV\\\\electron\\\\shared-legacy\\\\data-paths.js\" \"D:\\\\L-H\\\\LH-TV\\\\electron\\\\shared-legacy\\\\config.js\" \"D:\\\\L-H\\\\LH-TV\\\\electron\\\\shared-legacy\\\\ipc\\\\anime-ipc.js\")",
+      "Bash(Get-ChildItem *)",
+      "PowerShell(Select-String -Path \"electron\\\\main.ts\" -Pattern \"ipcMain\\\\.handle\\\\\\('\\([^']+\\)'\" | ForEach-Object { $_.Matches.Groups[1].Value } | Sort-Object -Unique)",
+      "PowerShell(Select-String -Path \"electron\\\\preload.ts\" -Pattern \"onEvent\\\\\\('\\([^']+\\)'\" | ForEach-Object { $_.Matches.Groups[1].Value } | Sort-Object -Unique)",
+      "PowerShell(New-Item *)",
+      "PowerShell(npm run *)",
+      "Bash(Select-Object -First 80)",
+      "Bash(New-Item *)",
+      "Bash(npm run *)",
+      "Bash(npx vue-tsc *)",
+      "Bash(npx vitest *)",
+      "Bash(npm install *)",
+      "PowerShell(Get-ChildItem -Path src/core -Directory | ForEach-Object { $name = $_.Name; $files = \\(Get-ChildItem -Path $_.FullName -Recurse -File | Measure-Object\\).Count; Write-Output \"$name \\($files files\\)\" })",
+      "PowerShell(git init *)"
+    ]
+  }
+}
