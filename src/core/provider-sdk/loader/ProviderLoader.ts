@@ -171,8 +171,11 @@ export class ProviderLoader {
     module: ProviderModule,
   ): Promise<LoadResult> {
     try {
+      // Unwrap default export if plugin uses `export default`
+      const mod = (module as any).default ? (module as any).default as ProviderModule : module
+
       // 1. 读取 manifest
-      const manifest = module.manifest
+      const manifest = mod.manifest
       if (!manifest) {
         return {
           id: pluginId,
@@ -196,7 +199,7 @@ export class ProviderLoader {
       // 3. 创建 Provider 实例
       let provider: IProvider
       try {
-        provider = module.createProvider()
+        provider = mod.createProvider()
       } catch (err) {
         return {
           id: manifest.id,

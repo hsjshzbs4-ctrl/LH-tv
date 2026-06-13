@@ -33,6 +33,7 @@ import Toast from '@/components/common/Toast.vue'
 import { useAppStore } from '@/stores/app'
 import { useUserStore } from '@/stores/user'
 import { useKeyboard } from '@/composables/useKeyboard'
+import { providerHost } from '@/provider-host'
 
 const appStore = useAppStore()
 const userStore = useUserStore()
@@ -41,6 +42,7 @@ onMounted(async () => {
   await Promise.all([
     appStore.loadAppConfig(),
     userStore.loadFromStorage(),
+    providerHost.initialize(),
   ])
 })
 

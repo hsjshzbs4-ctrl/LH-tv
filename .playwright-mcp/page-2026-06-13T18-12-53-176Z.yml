@@ -1,0 +1,66 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e6]: 🎬 LH
+    - generic [ref=e8]: Ctrl+K 搜索
+    - generic [ref=e9]:
+      - button "最小化" [ref=e10] [cursor=pointer]:
+        - img [ref=e11]
+      - button "最大化" [ref=e13] [cursor=pointer]:
+        - img [ref=e14]
+      - button "关闭" [ref=e16] [cursor=pointer]:
+        - img [ref=e17]
+  - generic [ref=e20]:
+    - navigation [ref=e21]:
+      - generic [ref=e22]:
+        - link "🏠 首页" [ref=e23] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e24]: 🏠
+          - generic: 首页
+        - link "📺 电视剧" [ref=e26] [cursor=pointer]:
+          - /url: /tv
+          - generic [ref=e27]: 📺
+          - generic: 电视剧
+        - link "🎬 电影" [ref=e28] [cursor=pointer]:
+          - /url: /movies
+          - generic [ref=e29]: 🎬
+          - generic: 电影
+        - link "🎌 动漫" [ref=e30] [cursor=pointer]:
+          - /url: /anime
+          - generic [ref=e31]: 🎌
+          - generic: 动漫
+        - link "🔍 搜索" [ref=e32] [cursor=pointer]:
+          - /url: /search
+          - generic [ref=e33]: 🔍
+          - generic: 搜索
+        - link "⬇️ 下载管理" [ref=e34] [cursor=pointer]:
+          - /url: /downloads
+          - generic [ref=e35]: ⬇️
+          - generic: 下载管理
+        - link "📥 本地库" [ref=e36] [cursor=pointer]:
+          - /url: /library
+          - generic [ref=e37]: 📥
+          - generic: 本地库
+        - link "❤️ 收藏" [ref=e38] [cursor=pointer]:
+          - /url: /favorites
+          - generic [ref=e39]: ❤️
+          - generic: 收藏
+        - link "🕐 历史" [ref=e40] [cursor=pointer]:
+          - /url: /history
+          - generic [ref=e41]: 🕐
+          - generic: 历史
+        - link "🧩 插件市场" [ref=e42] [cursor=pointer]:
+          - /url: /marketplace
+          - generic [ref=e43]: 🧩
+          - generic: 插件市场
+        - link "🛠️ 开发者" [ref=e44] [cursor=pointer]:
+          - /url: /developer
+          - generic [ref=e45]: 🛠️
+          - generic: 开发者
+        - link "⚙️ 设置" [ref=e46] [cursor=pointer]:
+          - /url: /settings
+          - generic [ref=e47]: ⚙️
+          - generic: 设置
+      - button "◀ 折叠" [ref=e49] [cursor=pointer]:
+        - generic [ref=e50]: ◀
+        - generic: 折叠
+    - main [ref=e51]

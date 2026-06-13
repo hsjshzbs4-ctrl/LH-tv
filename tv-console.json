@@ -1,0 +1,14 @@
+Total messages: 5 (Errors: 1, Warnings: 2)
+Returning 3 messages for level "info"
+
+[WARNING] 加载应用配置失败 @ http://localhost:5173/src/stores/app.ts:27
+[WARNING] [Vue warn]: Unhandled error during execution of mounted hook 
+  at <HomeView onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > key="/" > 
+  at <KeepAlive key=0 > 
+  at <BaseTransition mode="out-in" appear=false persisted=false  ... > 
+  at <Transition name="page" mode="out-in" > 
+  at <RouterView> 
+  at <AppLayout> 
+  at <App> @ http://localhost:5173/node_modules/.vite/deps/chunk-2Z3ZMNLR.js?v=27f813a8:2224
+TypeError: window.app.onPostersUpdated is not a function
+    at http://localhost:5173/src/views/HomeView.vue:65:40

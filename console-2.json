@@ -1,0 +1,18 @@
+Total messages: 9 (Errors: 1, Warnings: 2)
+Returning 7 messages for level "info"
+
+[WARNING] 加载应用配置失败 @ http://localhost:5173/src/stores/app.ts:27
+[LOG] [Registry] 已注册: 动漫爬虫 (anime-crawler) priority=2 @ http://localhost:5173/src/core/providers/registry/ProviderRegistry.ts:10
+[LOG] [Registry] 已注册: AppleCMS (applecms) priority=1 @ http://localhost:5173/src/core/providers/registry/ProviderRegistry.ts:10
+[LOG] [ProviderFacade] 已加载 2 个 Provider: anime-crawler, applecms @ http://localhost:5173/src/core/providers/ProviderFacade.ts:17
+[LOG] [ProviderHost] 已加载 2 个 Provider: anime-provider, apple-cms @ http://localhost:5173/src/provider-host/ProviderHostFacade.ts?t=1781374555244:23
+[WARNING] [Vue warn]: Unhandled error during execution of mounted hook 
+  at <HomeView onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > key="/" > 
+  at <KeepAlive key=0 > 
+  at <BaseTransition mode="out-in" appear=false persisted=false  ... > 
+  at <Transition name="page" mode="out-in" > 
+  at <RouterView> 
+  at <AppLayout> 
+  at <App> @ http://localhost:5173/node_modules/.vite/deps/chunk-2Z3ZMNLR.js?v=27f813a8:2224
+TypeError: window.app.onPostersUpdated is not a function
+    at http://localhost:5173/src/views/HomeView.vue:65:40
