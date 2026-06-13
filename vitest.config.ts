@@ -28,6 +28,7 @@ export default defineConfig({
       'tests/plugin-marketplace/**/*.spec.ts',
       'tests/marketplace/**/*.spec.ts',
       'tests/developer-platform/**/*.spec.ts',
+      'tests/performance/**/*.spec.ts',
     ],
     // 全局 setup 在每个测试文件前运行
     setupFiles: [
