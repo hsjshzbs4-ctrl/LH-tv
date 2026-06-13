@@ -88,8 +88,6 @@ export enum IPCChannel {
   // ─── Content Ecosystem (P6.0) ───
   ECOSYSTEM_SEARCH = 'ecosystem.search',
   ECOSYSTEM_RECOMMEND = 'ecosystem.recommend',
-  ECOSYSTEM_SERVER_CONNECT = 'ecosystem.server.connect',
-  ECOSYSTEM_SERVER_DISCONNECT = 'ecosystem.server.disconnect',
   ECOSYSTEM_LIBRARY_SCAN = 'ecosystem.library.scan',
   ECOSYSTEM_METADATA_LOOKUP = 'ecosystem.metadata.lookup',
   ECOSYSTEM_METADATA_ENRICH = 'ecosystem.metadata.enrich',
@@ -97,6 +95,14 @@ export enum IPCChannel {
   ECOSYSTEM_SET_TMDB_KEY = 'ecosystem.set-tmdb-key',
   ECOSYSTEM_SYNC_PROGRESS = 'ecosystem.sync-progress',
   ECOSYSTEM_GET_PROVIDERS = 'ecosystem.get-providers',
+
+  // ─── Media Servers (P6.2 CE6) ───
+  ECOSYSTEM_SERVER_CONNECT = 'ecosystem.server.connect',
+  ECOSYSTEM_SERVER_DISCONNECT = 'ecosystem.server.disconnect',
+  ECOSYSTEM_SERVER_LIST = 'ecosystem.server.list',
+  ECOSYSTEM_SERVER_SYNC = 'ecosystem.server.sync',
+  ECOSYSTEM_SERVER_PROGRESS = 'ecosystem.server.progress',
+  ECOSYSTEM_SERVER_STATUS = 'ecosystem.server.status',
 }
 
 // ==================== Event 通道 (main→renderer send) ====================
