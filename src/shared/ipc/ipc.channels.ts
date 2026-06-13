@@ -84,6 +84,19 @@ export enum IPCChannel {
   GET_TIANTIAN_DETAIL = 'get-tiantian-detail',
   GET_TIANTIAN_PLAY_URL = 'get-tiantian-play-url',
   SEARCH_TIANTIAN = 'search-tiantian',
+
+  // ─── Content Ecosystem (P6.0) ───
+  ECOSYSTEM_SEARCH = 'ecosystem.search',
+  ECOSYSTEM_RECOMMEND = 'ecosystem.recommend',
+  ECOSYSTEM_SERVER_CONNECT = 'ecosystem.server.connect',
+  ECOSYSTEM_SERVER_DISCONNECT = 'ecosystem.server.disconnect',
+  ECOSYSTEM_LIBRARY_SCAN = 'ecosystem.library.scan',
+  ECOSYSTEM_METADATA_LOOKUP = 'ecosystem.metadata.lookup',
+  ECOSYSTEM_METADATA_ENRICH = 'ecosystem.metadata.enrich',
+  ECOSYSTEM_GET_TMDB_KEY = 'ecosystem.get-tmdb-key',
+  ECOSYSTEM_SET_TMDB_KEY = 'ecosystem.set-tmdb-key',
+  ECOSYSTEM_SYNC_PROGRESS = 'ecosystem.sync-progress',
+  ECOSYSTEM_GET_PROVIDERS = 'ecosystem.get-providers',
 }
 
 // ==================== Event 通道 (main→renderer send) ====================

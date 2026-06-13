@@ -9,6 +9,7 @@ export enum CacheNamespace {
   CATALOG = 'catalog',
   EPISODE = 'episode',
   POSTER = 'poster',
+  METADATA = 'metadata',    // P6.0 CE3: Content Ecosystem
 }
 
 /** TTL 配置（毫秒） */
@@ -17,7 +18,8 @@ export const CACHE_TTL: Record<CacheNamespace, number> = {
   [CacheNamespace.DETAIL]: 6 * 60 * 60 * 1000,   // 6 小时
   [CacheNamespace.CATALOG]: 60 * 60 * 1000,      // 1 小时
   [CacheNamespace.EPISODE]: 6 * 60 * 60 * 1000,  // 6 小时
-  [CacheNamespace.POSTER]: 30 * 24 * 60 * 60 * 1000, // 30 天
+  [CacheNamespace.POSTER]: 30 * 24 * 60 * 60 * 1000,
+  [CacheNamespace.METADATA]: 24 * 60 * 60 * 1000, // 30 天
 }
 
 /** 缓存容量限制 */
