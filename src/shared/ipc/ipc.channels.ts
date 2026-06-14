@@ -103,6 +103,11 @@ export enum IPCChannel {
   ECOSYSTEM_SERVER_SYNC = 'ecosystem.server.sync',
   ECOSYSTEM_SERVER_PROGRESS = 'ecosystem.server.progress',
   ECOSYSTEM_SERVER_STATUS = 'ecosystem.server.status',
+
+  // ─── Search Index (P6.3 CE7) ───
+  ECOSYSTEM_SEARCH_BUILD = 'ecosystem.search.build',
+  ECOSYSTEM_SEARCH_REBUILD = 'ecosystem.search.rebuild',
+  ECOSYSTEM_SEARCH_STATS = 'ecosystem.search.stats',
 }
 
 // ==================== Event 通道 (main→renderer send) ====================

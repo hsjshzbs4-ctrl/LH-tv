@@ -21,6 +21,27 @@ export { BaseMetadataProvider } from './metadata/base/BaseMetadataProvider'
 export { MetadataToProviderAdapter } from './metadata/adapters/MetadataToProviderAdapter'
 export { MetadataEnhancementEngine } from './metadata/engine/MetadataEnhancementEngine'
 
+// Search (CE7)
+export { SearchFacade, searchFacade } from './search/facade/SearchFacade'
+export {
+  SearchDocumentType,
+} from './search/contracts/search.types'
+export type {
+  SearchDocument,
+  SearchSource,
+  ParsedQuery,
+  SearchOptions,
+  SearchResult,
+  SearchResponse,
+  MatchType,
+  AggregatedSearchResult,
+  AggregatedSource,
+  AggregatedSearchResponse,
+  IndexStats,
+} from './search/contracts/search.types'
+export type { ISearchDataSource } from './search/contracts/ISearchDataSource'
+export type { ISearchStorage } from './search/contracts/ISearchStorage'
+
 // Utilities
 export { RateLimiter, RATE_LIMITS } from './utils/RateLimiter'
 export { MetadataCache, metadataCache, METADATA_TTL } from './utils/MetadataCache'

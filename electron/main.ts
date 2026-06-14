@@ -161,6 +161,23 @@ function registerIpc(): void {
   ipcMain.handle(IPCChannel.STORAGE_IMPORT, (_event, json: string) => importUserData(json))
   ipcMain.handle(IPCChannel.STORAGE_STATS, () => getStorageStats())
 
+  // ── Content Ecosystem Search (P6.3 CE7) ──
+  // Primary API: renderer calls searchFacade directly.
+  // These IPC handlers enable cross-window / external triggers.
+  ipcMain.handle(IPCChannel.ECOSYSTEM_SEARCH_BUILD, async () => {
+    // Forward to renderer: send event → renderer rebuilds → reports back
+    mainWindow?.webContents.send(IPCEvent.MAIN_READY, { action: 'search-build' })
+    return { ok: true }
+  })
+  ipcMain.handle(IPCChannel.ECOSYSTEM_SEARCH_REBUILD, async () => {
+    mainWindow?.webContents.send(IPCEvent.MAIN_READY, { action: 'search-rebuild' })
+    return { ok: true }
+  })
+  ipcMain.handle(IPCChannel.ECOSYSTEM_SEARCH_STATS, async () => {
+    mainWindow?.webContents.send(IPCEvent.MAIN_READY, { action: 'search-stats' })
+    return { ok: true }
+  })
+
   // ---- 业务 IPC（运行时加载旧项目 shared/ 模块）----
   getSearchIpc().registerSearchIpc(ipcMain)
   getAnimeIpc().registerAnimeIpc(ipcMain)

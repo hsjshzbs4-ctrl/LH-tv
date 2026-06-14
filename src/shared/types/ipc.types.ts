@@ -183,6 +183,12 @@ export interface IpcChannelMap {
   'check-for-update': { request: void; response: IpcResponse<{ version: string | null; releaseNotes: string[] }> }
   'install-update': { request: void; response: void }
   'postpone-update': { request: void; response: void }
+
+  // Content Ecosystem Search (P6.3 CE7)
+  'ecosystem.search': { request: { query: string; options?: Record<string, unknown> }; response: Record<string, unknown> }
+  'ecosystem.search.build': { request: void; response: Record<string, unknown> }
+  'ecosystem.search.rebuild': { request: void; response: Record<string, unknown> }
+  'ecosystem.search.stats': { request: void; response: Record<string, unknown> }
 }
 
 /** 本地剧集 */

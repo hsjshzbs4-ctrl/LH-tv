@@ -157,5 +157,15 @@ contextBridge.exposeInMainWorld('app', {
   storageStats: () => ipcRenderer.invoke(IPCChannel.STORAGE_STATS) as Promise<{ favorites: number; history: number; positions: number; fileSize: number }>,
 
   // ---- 设置 ----
-  clearSearchCache: () => ipcRenderer.invoke(IPCChannel.CLEAR_SEARCH_CACHE) as Promise<boolean>
+  clearSearchCache: () => ipcRenderer.invoke(IPCChannel.CLEAR_SEARCH_CACHE) as Promise<boolean>,
+
+  // ---- Content Ecosystem Search (P6.3 CE7) ----
+  ecosystemSearch: (query: string, options?: Record<string, unknown>) =>
+    ipcRenderer.invoke(IPCChannel.ECOSYSTEM_SEARCH, { query, options }),
+  ecosystemSearchBuild: () =>
+    ipcRenderer.invoke(IPCChannel.ECOSYSTEM_SEARCH_BUILD),
+  ecosystemSearchRebuild: () =>
+    ipcRenderer.invoke(IPCChannel.ECOSYSTEM_SEARCH_REBUILD),
+  ecosystemSearchStats: () =>
+    ipcRenderer.invoke(IPCChannel.ECOSYSTEM_SEARCH_STATS),
 })
