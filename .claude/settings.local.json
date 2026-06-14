@@ -29,7 +29,8 @@
       "Bash(npm install *)",
       "PowerShell(Get-ChildItem -Path src/core -Directory | ForEach-Object { $name = $_.Name; $files = \\(Get-ChildItem -Path $_.FullName -Recurse -File | Measure-Object\\).Count; Write-Output \"$name \\($files files\\)\" })",
       "PowerShell(git init *)",
-      "PowerShell(npx vitest run tests/performance/memory/longrun-memory.spec.ts --reporter=verbose 2>&1 | Select-Object -Last 30)"
+      "PowerShell(npx vitest run tests/performance/memory/longrun-memory.spec.ts --reporter=verbose 2>&1 | Select-Object -Last 30)",
+      "mcp__plugin_playwright_playwright__browser_snapshot"
     ]
   }
 }
