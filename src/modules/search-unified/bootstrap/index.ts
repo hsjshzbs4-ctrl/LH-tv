@@ -1,0 +1,20 @@
+// modules/search-unified/bootstrap/index.ts — CE8-C4 Bootstrap barrel export
+
+export { UnifiedSearchModule } from './UnifiedSearchModule'
+export { UnifiedSearchFacade } from './UnifiedSearchFacade'
+export { SearchDependencyContainer } from './SearchDependencyContainer'
+export { SearchBootstrapper } from './SearchBootstrapper'
+export { SearchShutdownManager } from './SearchShutdownManager'
+export { SearchLifecycleManager } from './SearchLifecycleManager'
+export { SearchModuleDiagnostics } from './SearchModuleDiagnostics'
+export { SearchReadinessValidator } from './SearchReadinessValidator'
+export { SearchFeatureFlagsManager } from './SearchFeatureFlags'
+export { PRODUCTION_CONFIG, TEST_CONFIG, DEV_CONFIG } from './SearchModuleConfiguration'
+
+export type { SearchModuleConfig, SearchEnvironment } from './SearchModuleConfiguration'
+export type { BootstrapResult } from './SearchBootstrapper'
+export type { ShutdownResult } from './SearchShutdownManager'
+export type { ModuleState, ModuleHealth } from './SearchLifecycleManager'
+export type { ModuleDiagnosticSnapshot } from './SearchModuleDiagnostics'
+export type { ReadinessResult, ReadinessCheck } from './SearchReadinessValidator'
+export type { SearchFeatureFlags } from './SearchFeatureFlags'
