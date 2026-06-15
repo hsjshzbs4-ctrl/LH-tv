@@ -7,7 +7,7 @@
 | Current Branch | `release/rc2-candidate` |
 | Current Commit | `4f6794a` |
 | Current Freeze | `RC3-APPROVED` (RC3.1 frozen) |
-| Project Phase | PB1 — Public Beta |
+| Project Phase | PB1 — Public Beta Authorized |
 | Date | 2026-06-15 |
 
 ## Frozen Modules
