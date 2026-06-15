@@ -5,9 +5,9 @@
 | 字段 | 值 |
 |------|-----|
 | Current Branch | `release/rc2-candidate` |
-| Current Commit | `2cf0268` |
-| Current Freeze | `RC3-APPROVED` (RC3.1 frozen) |
-| Project Phase | PB1 Complete — Beta Freeze Ready |
+| Current Commit | `9b34c8c` |
+| Current Freeze | `PB1-BETA-FREEZE` |
+| Project Phase | PB1 Beta Freeze — Public Beta Approved |
 | Date | 2026-06-15 |
 
 ## Frozen Modules
