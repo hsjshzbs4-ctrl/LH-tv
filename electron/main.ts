@@ -6,14 +6,13 @@ import { IPCChannel, IPCEvent } from '@shared/ipc/ipc.channels'
 import { WIN, ALLOWED_HOSTS, FALLBACK_SOURCES } from './utils/config'
 import { createLogger } from './utils/logger'
 import { encrypt, decrypt } from './utils/secrets'
-import { startAutoUpdate, stopAutoUpdate } from './services/updater.service'
+import { startAutoUpdate } from './services/updater.service'
 import {
   getSearchIpc,
   getAnimeIpc,
   getDownloadIpc,
   getCatalogIpc,
   getPosterIpc,
-  closeBrowsers,
   refreshAllPosters,
   forceRefreshAllPosters,
   setPosterNotifyWindow
@@ -25,6 +24,13 @@ import {
   importUserData,
   getStorageStats
 } from './services/storage.service'
+import {
+  registerShutdownHooks,
+  gracefulShutdown,
+  attachRendererRecovery,
+  attachUnresponsiveRecovery,
+  attachLoadFailureRecovery
+} from './runtime'
 
 // 桥接旧项目 shared/ 中的 IPC 注册模块（运行时 require）
 
@@ -54,7 +60,7 @@ process.on('uncaughtException', (err: NodeJS.ErrnoException) => {
   if (mainWindow && !mainWindow.isDestroyed()) {
     mainWindow.webContents.send(IPCEvent.APP_ERROR, { message: err.message, fatal: true })
   }
-  setTimeout(() => process.exit(1), 1000)
+  gracefulShutdown('fatal-error')
 })
 
 process.on('unhandledRejection', (reason) => {
@@ -105,6 +111,11 @@ function createWindow(): void {
   mainWindow.on('closed', () => {
     mainWindow = null
   })
+
+  // RC3.1: Attach recovery handlers
+  attachRendererRecovery(mainWindow)
+  attachUnresponsiveRecovery(mainWindow)
+  attachLoadFailureRecovery(mainWindow)
 }
 
 // ==================== 注册全部 IPC ====================
@@ -205,6 +216,9 @@ if (!gotTheLock) {
 // ==================== 生命周期 ====================
 Menu.setApplicationMenu(null)
 
+// RC3.1: Register graceful shutdown hooks (before-quit, will-quit)
+registerShutdownHooks()
+
 app.whenReady().then(() => {
   registerIpc()
   createWindow()
@@ -234,9 +248,14 @@ app.whenReady().then(() => {
 })
 
 app.on('window-all-closed', async () => {
-  stopAutoUpdate()
-  await closeBrowsers()
-  app.quit()
+  // RC3.1: Use graceful shutdown with guaranteed app.quit()
+  try {
+    await gracefulShutdown('user-quit')
+  } finally {
+    if (process.platform !== 'darwin') {
+      app.quit()
+    }
+  }
 })
 
 app.on('activate', () => {

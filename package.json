@@ -66,8 +66,15 @@
     "asar": true,
     "win": {
       "icon": "resources/icon.ico",
-      "target": "portable",
+      "target": ["portable", "nsis"],
       "verifyUpdateCodeSignature": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
     }
   }
 }

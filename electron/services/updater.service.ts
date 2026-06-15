@@ -5,8 +5,56 @@ import { IPCChannel, IPCEvent } from '@shared/ipc/ipc.channels'
 
 const UPDATE_CHECK_INTERVAL = 4 * 60 * 60 * 1000 // 4小时
 let updateCheckTimer: ReturnType<typeof setInterval> | null = null
+let updateConfigured = false
+
+// ==================== RC3.1: Environment-Driven Update Provider ====================
+const UPDATE_SERVER_URL = process.env.UPDATE_SERVER_URL?.trim()
+const UPDATE_PROVIDER = (process.env.UPDATE_PROVIDER || 'generic').toLowerCase()
+const UPDATE_CHANNEL = process.env.UPDATE_CHANNEL || 'latest'
+
+function configureUpdaterFeed(): void {
+  if (updateConfigured) return
+  updateConfigured = true
+
+  if (!UPDATE_SERVER_URL) {
+    console.log('[更新] UPDATE_SERVER_URL 未设置 — 自动更新已禁用')
+    return
+  }
+
+  console.log(`[更新] 配置更新源: provider=${UPDATE_PROVIDER}, channel=${UPDATE_CHANNEL}`)
+
+  switch (UPDATE_PROVIDER) {
+    case 'github':
+      autoUpdater.setFeedURL({
+        provider: 'github',
+        owner: UPDATE_SERVER_URL.split('/')[0],
+        repo: UPDATE_SERVER_URL.split('/')[1],
+        token: process.env.GITHUB_TOKEN || undefined
+      })
+      break
+    case 's3':
+      autoUpdater.setFeedURL({
+        provider: 's3',
+        bucket: process.env.S3_BUCKET || '',
+        region: process.env.S3_REGION || 'us-east-1',
+        path: process.env.S3_PATH || '/'
+      })
+      break
+    case 'generic':
+    default:
+      autoUpdater.setFeedURL({
+        provider: 'generic',
+        url: UPDATE_SERVER_URL,
+        channel: UPDATE_CHANNEL !== 'latest' ? UPDATE_CHANNEL : undefined
+      })
+      break
+  }
+}
 
 export function startAutoUpdate(mainWindow: BrowserWindow): void {
+  // RC3.1: Configure update provider from environment
+  configureUpdaterFeed()
+
   // v2: 自动下载（静默，不打扰用户）
   autoUpdater.autoDownload = true
   autoUpdater.autoInstallOnAppQuit = true
@@ -84,8 +132,13 @@ export function startAutoUpdate(mainWindow: BrowserWindow): void {
     }
   })
 
-  ipcMain.handle(IPCChannel.INSTALL_UPDATE, () => {
+  ipcMain.handle(IPCChannel.INSTALL_UPDATE, async () => {
     stopAutoUpdate()
+    // RC3.1: Close Puppeteer browsers before update restart
+    try {
+      const { closeBrowsers } = await import('../ipc/bridge')
+      await closeBrowsers()
+    } catch (e) { /* ignore */ }
     autoUpdater.quitAndInstall()
   })
 
