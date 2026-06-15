@@ -5,7 +5,7 @@
 | 字段 | 值 |
 |------|-----|
 | Current Branch | `release/rc2-candidate` |
-| Current Commit | `5056dc2` |
+| Current Commit | `3b0097d` |
 | Current Freeze | `RC3-APPROVED` (RC3.1 frozen) |
 | Project Phase | PB1 Sprint 2 Complete — Sprint 3 Ready |
 | Date | 2026-06-15 |
