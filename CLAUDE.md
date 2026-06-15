@@ -5,9 +5,9 @@
 | 字段 | 值 |
 |------|-----|
 | Current Branch | `release/rc2-candidate` |
-| Current Commit | `f1d800c` |
-| Current Freeze | `RC3-APPROVED` |
-| Project Phase | RC3 Production Ready |
+| Current Commit | `4f6794a` |
+| Current Freeze | `RC3-APPROVED` (RC3.1 frozen) |
+| Project Phase | PB1 — Public Beta |
 | Date | 2026-06-15 |
 
 ## Frozen Modules
@@ -35,6 +35,12 @@
 CE7-FREEZE → PRE-CE8-STABLE → CE8-FREEZE → RC2-BASELINE → CE9-B~G-FREEZE → RC3-BASELINE → RC3-APPROVED
 ```
 
-## Next Planned Milestone
+## Next Milestone
 
-**RC4 / CE10** — webSecurity fix, embedding recommendation, provider/plugin isolation enforcement
+**PB1 Public Beta** — Crash telemetry, user feedback pipeline, performance monitoring, release monitoring
+
+**PB1 Exit Criteria**: 100+ beta users, 95% crash-free, 0 critical bugs, <5 high bugs, 99% startup success
+
+**RC3.1 is FROZEN** — no further stabilization unless critical/security issue. All new work under PB1.
+
+See `docs/MASTER_EXECUTION_DOCUMENT.md` for full roadmap.
