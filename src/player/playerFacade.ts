@@ -13,6 +13,12 @@ import { DRMManager } from './drmManager'
 import { PlaybackState, PlaybackQuality } from './playerTypes'
 import type { SubtitleTrack } from './playerTypes'
 import { PlayerEvent } from '@/core/player/types/player.types'
+// S3A-3: 智能源切换
+import { PlaybackFacade } from '@/core/playback'
+import type { PlaybackSource, SourceSwitchEventData } from '@/core/playback'
+
+/** S3A-3: 源切换回调 */
+export type SourceSwitchCallback = (data: SourceSwitchEventData) => void
 
 export class PlayerFacade {
   // ── 子模块 ──
@@ -28,10 +34,19 @@ export class PlayerFacade {
   private _media: MediaItem | null = null
   private _detail: MediaDetail | null = null
   private _playUrl: string = ''
+  /** S3A-3: 智能源切换管理器 */
+  private sourceSwitch: PlaybackFacade
+  /** S3A-3: 切换锁 — 防止重复切换导致源队列耗尽 */
+  private _isSwitching = false
 
   get currentMedia(): MediaItem | null { return this._media }
   get currentDetail(): MediaDetail | null { return this._detail }
   get playUrl(): string { return this._playUrl }
+
+  /** S3A-3: 是否有更多源可切换 */
+  get hasMoreSources(): boolean { return this.sourceSwitch.hasMoreSources }
+  /** S3A-3: 剩余重试次数 */
+  get remainingRetries(): number { return this.sourceSwitch.remainingRetries }
 
   constructor() {
     this.engine = new VideoEngine()
@@ -41,6 +56,7 @@ export class PlayerFacade {
     this.quality = new QualityManager()
     this.subtitle = new SubtitleManager()
     this.drm = new DRMManager()
+    this.sourceSwitch = new PlaybackFacade({ maxRetries: 3 })  // S3A-3
   }
 
   // ── 初始化/销毁 ──
@@ -60,17 +76,35 @@ export class PlayerFacade {
 
   // ── 媒体加载 ──
 
+  /** S3A-3: 订阅源切换事件 */
+  onSourceSwitch(cb: SourceSwitchCallback): () => void {
+    return this.sourceSwitch.subscribe(cb)
+  }
+
   /** 加载媒体详情并准备播放 */
-  async loadMedia(media: MediaItem, detail: MediaDetail, episode: MediaEpisode, playUrl: string): Promise<void> {
+  async loadMedia(
+    media: MediaItem,
+    detail: MediaDetail,
+    episode: MediaEpisode,
+    playUrl: string,
+    /** S3A-3: 所有可用播放源（供自动切换） */
+    allSources?: PlaybackSource[],
+  ): Promise<void> {
     this._media = media
     this._detail = detail
-    this._playUrl = playUrl
 
     this.episodes.loadEpisodeList(detail.episodes)
     this.episodes.selectById(episode.id)
 
+    // S3A-3: 初始化源切换队列
+    const sources = allSources && allSources.length > 0
+      ? allSources
+      : [{ providerId: media.providerId, providerName: media.providerName || media.providerId, episodeId: episode.id, playUrl, priority: 0 }]
+    const bestSource = this.sourceSwitch.start(media.id, sources, episode.episodeNumber || 1)
+    this._playUrl = bestSource?.playUrl || playUrl
+
     // DRM 检测
-    const drmType = this.drm.detectDRM(playUrl)
+    const drmType = this.drm.detectDRM(this._playUrl)
     if (drmType !== 'none') {
       console.log(`[PB2] DRM detected: ${drmType}`)
     }
@@ -79,10 +113,45 @@ export class PlayerFacade {
     const savedPos = await this.resume.loadPosition(episode.id)
 
     this.session.begin(media.id, episode.id, media.providerId)
-    await this.engine.loadSource(playUrl)
+    await this.engine.loadSource(this._playUrl)
 
     if (savedPos > 0 && this.resume.shouldResume(savedPos)) {
       this.engine.seek(savedPos)
+    }
+  }
+
+  /** S3A-3: 当前源失败 → 尝试下一个源（null = 全部耗尽） */
+  async tryNextSource(reason?: string): Promise<boolean> {
+    // S3A-3 审核修正: 防止重复切换 — 双重 error 事件可能导致源队列被跳过
+    if (this._isSwitching) return false
+    this._isSwitching = true
+
+    try {
+      const nextSource = this.sourceSwitch.onFailed(reason)
+      if (!nextSource) return false
+
+      // 保存播放进度（源切换时保留）
+      this.sourceSwitch.saveProgress(this.engine.currentTime)
+
+      this._playUrl = nextSource.playUrl
+      await this.engine.loadSource(this._playUrl)
+
+      // 恢复播放进度
+      const savedProgress = this.sourceSwitch.getSavedProgress()
+      if (savedProgress > 1) {
+        this.engine.seek(savedProgress)
+        this.sourceSwitch.clearProgress()
+      }
+      return true
+    } finally {
+      this._isSwitching = false
+    }
+  }
+
+  /** S3A-3: 标记当前源播放成功 */
+  markSourceSuccess(): void {
+    if (this._media) {
+      this.sourceSwitch.onSuccess(this._media.id)
     }
   }
 

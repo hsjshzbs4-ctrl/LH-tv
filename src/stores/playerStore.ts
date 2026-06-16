@@ -7,6 +7,7 @@ import { PlayerFacade } from '@/player'
 import { PlaybackState, PlaybackQuality, PlayerTelemetryEvent } from '@/player'
 import type { MediaItem, MediaDetail, MediaEpisode } from '@provider-contracts'
 import type { SubtitleTrack } from '@/player'
+import type { PlaybackSource } from '@/core/playback'  // S3A-3
 
 export const usePlayerStore = defineStore('player', () => {
   // ── 实例 ──
@@ -28,6 +29,8 @@ export const usePlayerStore = defineStore('player', () => {
   const error = ref<string | null>(null)
   const showResumeDialog = ref(false)
   const resumePosition = ref(0)
+  /** S3A-3: 源切换中 */
+  const switchingSource = ref(false)
 
   // ── 计算属性 ──
   const isPlaying = computed(() => playbackState.value === PlaybackState.PLAYING)
@@ -68,8 +71,28 @@ export const usePlayerStore = defineStore('player', () => {
     currentDetail.value = detail
     currentEpisode.value = episode
 
-    await facade.loadMedia(media, detail, episode, playUrl)
+    // S3A-3: 构建多源列表（同一集号的不同源）
+    const allSources: PlaybackSource[] = detail.episodes
+      .filter(e => e.episodeNumber === episode.episodeNumber && e.url)
+      .map((e, i) => ({
+        providerId: media.providerId,
+        providerName: media.providerName || media.providerId,
+        episodeId: e.id,
+        playUrl: e.url!,
+        priority: i,
+      }))
+
+    await facade.loadMedia(media, detail, episode, playUrl, allSources)
     duration.value = facade.duration
+
+    // S3A-3: 订阅源切换事件（UI 可显示切换状态）
+    facade.onSourceSwitch((data) => {
+      if (data.event === 'switching') {
+        switchingSource.value = true
+      } else {
+        switchingSource.value = false
+      }
+    })
 
     // 事件绑定
     facade.on('player:timeupdate' as never, () => {
@@ -94,9 +117,24 @@ export const usePlayerStore = defineStore('player', () => {
         }
       }
     })
-    facade.on('player:error' as never, () => {
+    // S3A-3: 错误回调 — 先尝试切换源，耗尽后才设置 error
+    // S3A-3 审核修正: switchingSource 同时充当防重入锁
+    facade.on('player:error' as never, async () => {
+      if (switchingSource.value) return  // 已在切换中，忽略重复 error
+      if (facade!.hasMoreSources) {
+        switchingSource.value = true
+        const switched = await facade!.tryNextSource('播放失败')
+        switchingSource.value = false
+        if (switched) return  // 切换成功，不显示错误
+      }
       playbackState.value = PlaybackState.ERROR
-      error.value = '播放出错'
+      error.value = facade!.remainingRetries <= 0
+        ? '所有播放源均已尝试，播放失败'
+        : '播放出错'
+    })
+    // S3A-3: 就绪回调 — 标记源成功
+    facade.on('player:ready' as never, () => {
+      facade?.markSourceSuccess()
     })
 
     // 续播检测
@@ -172,17 +210,32 @@ export const usePlayerStore = defineStore('player', () => {
 
   function clearError(): void { error.value = null }
 
+  /** S3A-3: 手动切换播放源（用户点击"换源"按钮） */
+  async function tryNextSource(): Promise<boolean> {
+    if (!facade) return false
+    switchingSource.value = true
+    const switched = await facade.tryNextSource('手动切换')
+    switchingSource.value = false
+    if (!switched) {
+      error.value = '所有播放源均已尝试'
+      playbackState.value = PlaybackState.ERROR
+    }
+    return switched
+  }
+
   return {
     currentMedia, currentDetail, currentEpisode,
     playbackState, progress, duration, currentTime,
     quality, subtitleEnabled, subtitleTracks, volume, muted,
     error, showResumeDialog, resumePosition,
     isPlaying, isLoading, progressPercent,
+    switchingSource,                                    // S3A-3
     loadMedia, play, pause, seek,
     switchEpisode, switchQuality,
     enableSubtitles, disableSubtitles,
     setVolume, toggleMute,
     destroy, clearError,
+    tryNextSource,                                       // S3A-3
     initialize,
   }
 })

@@ -30,9 +30,16 @@
         <button class="replay-btn" @click.stop="store.seek(0); store.play()">🔄 重新播放</button>
       </div>
 
+      <!-- S3A-3: 源切换中 -->
+      <div v-if="store.switchingSource" class="overlay-center">
+        <LoadingSpinner />
+        <span style="color:#fff;margin-top:12px;font-size:14px">正在切换播放源...</span>
+      </div>
+
       <!-- 错误 -->
-      <div v-if="store.error" class="overlay-center">
-        <ErrorState :message="store.error" action-label="返回" @action="goBack" />
+      <div v-else-if="store.error" class="overlay-center">
+        <ErrorState :message="store.error" :on-retry="() => store.tryNextSource()" hint="点击重试切换播放源" />
+        <button class="replay-btn" style="margin-top:8px" @click.stop="goBack">← 返回</button>
       </div>
     </div>
 
