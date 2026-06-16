@@ -83,6 +83,7 @@ export enum PlayerTelemetryEvent {
   PLAYER_SEEK = 'player:seek',
   PLAYER_COMPLETE = 'player:complete',
   PLAYER_EPISODE_SWITCH = 'player:episode_switch',
+  PLAYER_SOURCE_SWITCH = 'player:source_switch',       // S3B-4
   PLAYER_QUALITY_SWITCH = 'player:quality_switch',
 }
 

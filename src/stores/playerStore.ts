@@ -104,6 +104,13 @@ export const usePlayerStore = defineStore('player', () => {
       } else {
         switchingSource.value = false
       }
+      // S3B-4: 源切换事件 → 遥测
+      emitTelemetry(PlayerTelemetryEvent.PLAYER_SOURCE_SWITCH, {
+        event: data.event,
+        fromSource: data.fromSource,
+        toSource: data.toSource,
+        reason: data.reason,
+      })
     })
 
     // S3B-3: 定期保存进度（Engine 每 15s 触发 → ResumeManager 持久化）
@@ -189,6 +196,11 @@ export const usePlayerStore = defineStore('player', () => {
     if (showResumeDialog.value) {
       showResumeDialog.value = false
       facade!.seek(resumePosition.value)
+      // S3B-4: 续播 seek 也要发遥测（之前 silent）
+      emitTelemetry(PlayerTelemetryEvent.PLAYER_SEEK, {
+        time: resumePosition.value,
+        source: 'resume',
+      })
     }
     await facade!.play()
   }
