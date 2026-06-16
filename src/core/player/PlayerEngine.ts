@@ -27,6 +27,8 @@ export class PlayerEngine implements IPlayerEngine {
 
   // 公开回调
   onProgressSave?: (currentTime: number) => void
+  /** S3A-4: HLS 实例就绪回调 → QualityManager.bindHLS() */
+  onHLSReady?: (hls: unknown) => void
 
   constructor(config?: Partial<PlayerEngineConfig>) {
     this.config = { ...DEFAULT_PLAYER_CONFIG, ...config }
@@ -56,6 +58,7 @@ export class PlayerEngine implements IPlayerEngine {
       onEnded: () => { this.stopProgressTimer(); this.emit(PlayerEvent.ENDED) },
       onError: (msg: string) => this.emit(PlayerEvent.ERROR, { message: msg }),
       onBuffering: (b: boolean) => this.emit(PlayerEvent.BUFFERING, { buffering: b }),
+      onHLSReady: (hls: unknown) => { this.onHLSReady?.(hls) },  // S3A-4
     }
 
     // 选择适配器

@@ -63,4 +63,6 @@ export interface AdapterEventCallbacks {
   onEnded?: () => void
   onError?: (message: string) => void
   onBuffering?: (buffering: boolean) => void
+  /** S3A-4: HLS 实例就绪 — 用于 QualityManager.bindHLS() */
+  onHLSReady?: (hls: unknown) => void
 }

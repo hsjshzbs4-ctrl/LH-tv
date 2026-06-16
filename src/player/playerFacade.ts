@@ -57,6 +57,11 @@ export class PlayerFacade {
     this.subtitle = new SubtitleManager()
     this.drm = new DRMManager()
     this.sourceSwitch = new PlaybackFacade({ maxRetries: 3 })  // S3A-3
+
+    // S3A-4: HLS 实例就绪 → 自动绑定 QualityManager
+    this.engine.onHLSReady = (hls: unknown) => {
+      this.quality.bindHLS(hls)
+    }
   }
 
   // ── 初始化/销毁 ──

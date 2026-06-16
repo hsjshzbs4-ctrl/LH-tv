@@ -65,6 +65,7 @@ export class HLSAdapter extends BaseAdapter {
 
     this.hls.on(Hls.Events.MANIFEST_PARSED, () => {
       this.callbacks.onReady?.()
+      this.callbacks.onHLSReady?.(this.hls)  // S3A-4: 传出 HLS 实例给 QualityManager
     })
 
     this.hls.loadSource(url)

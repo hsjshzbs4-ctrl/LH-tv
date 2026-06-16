@@ -78,4 +78,12 @@ export class VideoEngine {
   set onProgressSave(fn: ((t: number) => void) | undefined) {
     this.engine.onProgressSave = fn
   }
+
+  /** S3A-4: HLS 实例就绪回调 */
+  get onHLSReady(): ((hls: unknown) => void) | undefined {
+    return this.engine.onHLSReady
+  }
+  set onHLSReady(fn: ((hls: unknown) => void) | undefined) {
+    this.engine.onHLSReady = fn
+  }
 }
