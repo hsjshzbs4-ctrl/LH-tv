@@ -53,6 +53,12 @@ const routes: RouteRecordRaw[] = [
     meta: { title: '播放', icon: '▶️' }
   },
   {
+    path: '/player/:providerId/:mediaId/:episodeId',
+    name: 'player',
+    component: () => import('@/renderer/pages/PlayerPage.vue'),
+    meta: { title: '播放', icon: '▶️' }
+  },
+  {
     path: '/downloads',
     name: 'downloads',
     component: () => import('@/views/DownloadView.vue'),
