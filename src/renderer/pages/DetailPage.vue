@@ -94,17 +94,29 @@ async function toggleFav() {
   await store.toggleFavorite(media)
 }
 
-function goToPlay(episodeId: string) {
+async function goToPlay(episodeId: string) {
   if (!store.detailItem) return
-  router.push({
-    path: '/play',
-    query: {
-      name: store.detailItem.title,
-      providerId: store.detailItem.providerId,
-      mediaId: store.detailItem.id,
-      episodeId,
-    },
-  })
+
+  // PB2-S2: Resume Check before launching player
+  const { continueWatchingService } = await import('@/integration/continueWatching')
+  const resumeCard = continueWatchingService.getResumeCard(
+    store.detailItem.id,
+    episodeId,
+  )
+
+  const query: Record<string, string> = {
+    name: store.detailItem.title,
+    providerId: store.detailItem.providerId,
+    mediaId: store.detailItem.id,
+    episodeId,
+  }
+
+  if (resumeCard) {
+    query.resume = 'true'
+    query.position = String(resumeCard.lastPosition)
+  }
+
+  router.push({ path: `/player/${store.detailItem.providerId}/${store.detailItem.id}/${episodeId}`, query })
 }
 
 onMounted(async () => {
