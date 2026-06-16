@@ -106,6 +106,18 @@ export const usePlayerStore = defineStore('player', () => {
       }
     })
 
+    // S3B-3: 定期保存进度（Engine 每 15s 触发 → ResumeManager 持久化）
+    facade.engine.onProgressSave = (time: number) => {
+      if (currentMedia.value && currentEpisode.value) {
+        facade!.resume.savePosition(
+          currentMedia.value.id,
+          currentEpisode.value.id,
+          time,
+          facade!.duration,
+        )
+      }
+    }
+
     // 事件绑定
     facade.on('player:timeupdate' as never, () => {
       currentTime.value = facade!.currentTime
@@ -118,6 +130,15 @@ export const usePlayerStore = defineStore('player', () => {
     facade.on('player:pause' as never, () => {
       playbackState.value = PlaybackState.PAUSED
       emitTelemetry(PlayerTelemetryEvent.PLAYER_PAUSE)
+      // S3B-3: 暂停时保存进度
+      if (currentMedia.value && currentEpisode.value) {
+        facade!.resume.savePosition(
+          currentMedia.value.id,
+          currentEpisode.value.id,
+          facade!.currentTime,
+          facade!.duration,
+        )
+      }
     })
     facade.on('player:ended' as never, () => {
       playbackState.value = PlaybackState.ENDED
@@ -215,7 +236,16 @@ export const usePlayerStore = defineStore('player', () => {
     facade?.setMuted(muted.value)
   }
 
-  function destroy(): void {
+  async function destroy(): Promise<void> {
+    // S3B-3: 退出前保存最终位置（ResumeManager → localStorage + historyFacade）
+    if (facade && currentMedia.value && currentEpisode.value) {
+      await facade.resume.savePosition(
+        currentMedia.value.id,
+        currentEpisode.value.id,
+        facade.currentTime,
+        facade.duration,
+      )
+    }
     facade?.session.end()
     facade?.destroy()
     facade = null
