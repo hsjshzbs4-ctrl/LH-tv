@@ -7,32 +7,44 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/',
     name: 'home',
-    component: () => import('@/views/HomeView.vue'),
+    component: () => import('@/renderer/pages/HomePage.vue'),
     meta: { title: '首页', icon: '🏠', keepAlive: true }
   },
   {
     path: '/tv',
     name: 'tv',
-    component: () => import('@/views/TVView.vue'),
-    meta: { title: '电视剧', icon: '📺', keepAlive: true }
+    component: () => import('@/renderer/pages/CategoryPage.vue'),
+    meta: { title: '电视剧', icon: '📺', keepAlive: true, category: 'tv' as const }
   },
   {
     path: '/movies',
     name: 'movies',
-    component: () => import('@/views/MoviesView.vue'),
-    meta: { title: '电影', icon: '🎬', keepAlive: true }
+    component: () => import('@/renderer/pages/CategoryPage.vue'),
+    meta: { title: '电影', icon: '🎬', keepAlive: true, category: 'movie' as const }
   },
   {
     path: '/anime',
     name: 'anime',
-    component: () => import('@/views/AnimeView.vue'),
-    meta: { title: '动漫', icon: '🎌', keepAlive: true }
+    component: () => import('@/renderer/pages/CategoryPage.vue'),
+    meta: { title: '动漫', icon: '🎌', keepAlive: true, category: 'anime' as const }
   },
   {
     path: '/search',
     name: 'search',
-    component: () => import('@/views/SearchView.vue'),
+    component: () => import('@/renderer/pages/SearchPage.vue'),
     meta: { title: '搜索', icon: '🔍' }
+  },
+  {
+    path: '/detail',
+    name: 'detail',
+    component: () => import('@/renderer/pages/DetailPage.vue'),
+    meta: { title: '详情', icon: '📋' }
+  },
+  {
+    path: '/category/:type',
+    name: 'category',
+    component: () => import('@/renderer/pages/CategoryPage.vue'),
+    meta: { title: '分类', icon: '📂' }
   },
   {
     path: '/play',
@@ -55,13 +67,13 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/favorites',
     name: 'favorites',
-    component: () => import('@/views/FavoritesView.vue'),
+    component: () => import('@/renderer/pages/FavoritesPage.vue'),
     meta: { title: '收藏', icon: '❤️' }
   },
   {
     path: '/history',
     name: 'history',
-    component: () => import('@/views/HistoryView.vue'),
+    component: () => import('@/renderer/pages/HistoryPage.vue'),
     meta: { title: '历史', icon: '🕐' }
   },
   {
