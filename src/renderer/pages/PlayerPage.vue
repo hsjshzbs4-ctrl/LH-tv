@@ -154,12 +154,12 @@ const showControls = ref(true)
 const showEpisodePanel = ref(false)
 let hideTimer: ReturnType<typeof setTimeout> | null = null
 
-const episodes = computed<MediaEpisode[]>(() => {
-  return store.currentDetail?.episodes || []
-})
+/** S3B-2: 剧集列表 — 从 store（← EpisodeManager SSOT）读取 */
+const episodes = computed<MediaEpisode[]>(() => store.allEpisodes)
 
-const hasPrev = computed(() => episodes.value.length > 1)
-const hasNext = computed(() => episodes.value.length > 1)
+/** S3B-2: 是否有上一集/下一集 — 从 EpisodeManager */
+const hasPrev = computed(() => store.hasPrev)
+const hasNext = computed(() => store.hasNext)
 
 const QUALITY_CYCLE: PlaybackQuality[] = [
   PlaybackQuality.AUTO,
@@ -179,7 +179,8 @@ async function selectEpisode(idx: number) {
   const ep = episodes.value[idx]
   if (!ep) return
   showEpisodePanel.value = false
-  await store.switchEpisode(ep, '' /* URL 由 facade 内部管理 */)
+  // S3B-2: 使用 episode 自身的 URL
+  await store.switchEpisode(ep, ep.url || '')
 }
 
 async function prevEpisode() {

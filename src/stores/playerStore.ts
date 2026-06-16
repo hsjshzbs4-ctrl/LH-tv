@@ -37,6 +37,15 @@ export const usePlayerStore = defineStore('player', () => {
   const isLoading = computed(() => playbackState.value === PlaybackState.LOADING)
   const progressPercent = computed(() => duration.value > 0 ? (currentTime.value / duration.value) * 100 : 0)
 
+  /** S3B-2: 剧集列表 — 从 EpisodeManager（唯一 SSOT）读取 */
+  const allEpisodes = computed<MediaEpisode[]>(() => {
+    return facade?.episodes.getEpisodes() || currentDetail.value?.episodes || []
+  })
+  /** S3B-2: 是否有上一集 */
+  const hasPrev = computed(() => facade?.episodes.hasPrevious || false)
+  /** S3B-2: 是否有下一集 */
+  const hasNext = computed(() => facade?.episodes.hasNext || false)
+
   // ── 遥测发射（PATCH 3）──
   function emitTelemetry(event: PlayerTelemetryEvent, data?: Record<string, unknown>): void {
     try {
@@ -69,7 +78,8 @@ export const usePlayerStore = defineStore('player', () => {
     facade = new PlayerFacade()
     currentMedia.value = media
     currentDetail.value = detail
-    currentEpisode.value = episode
+    // S3B-2: currentEpisode 由 EpisodeManager 持有，操作后同步
+    currentEpisode.value = null  // 清空旧值，等待 facade 操作后同步
 
     // S3A-3: 构建多源列表（同一集号的不同源）
     const allSources: PlaybackSource[] = detail.episodes
@@ -84,6 +94,8 @@ export const usePlayerStore = defineStore('player', () => {
 
     await facade.loadMedia(media, detail, episode, playUrl, allSources)
     duration.value = facade.duration
+    // S3B-2: currentEpisode 从 EpisodeManager 同步（唯一 SSOT）
+    currentEpisode.value = facade.episodes.currentEpisode
 
     // S3A-3: 订阅源切换事件（UI 可显示切换状态）
     facade.onSourceSwitch((data) => {
@@ -112,8 +124,9 @@ export const usePlayerStore = defineStore('player', () => {
       emitTelemetry(PlayerTelemetryEvent.PLAYER_COMPLETE)
       if (facade!.episodes.shouldAutoPlayNext()) {
         const next = facade!.episodes.nextEpisode()
-        if (next && facade!.playUrl) {
-          switchEpisode(next, facade!.playUrl)
+        // S3B-2: 使用下一集自身的 URL（而非当前源的 playUrl）
+        if (next && next.url) {
+          switchEpisode(next, next.url)
         }
       }
     })
@@ -167,8 +180,9 @@ export const usePlayerStore = defineStore('player', () => {
   }
 
   async function switchEpisode(episode: MediaEpisode, playUrl: string): Promise<void> {
-    currentEpisode.value = episode
+    // S3B-2: 不提前写 currentEpisode — facade 操作后从 EpisodeManager 同步
     await facade?.switchEpisode(episode, playUrl)
+    currentEpisode.value = facade?.episodes.currentEpisode || null
     emitTelemetry(PlayerTelemetryEvent.PLAYER_EPISODE_SWITCH, {
       episodeId: episode.id,
       episodeNumber: episode.episodeNumber,
@@ -229,6 +243,7 @@ export const usePlayerStore = defineStore('player', () => {
     quality, subtitleEnabled, subtitleTracks, volume, muted,
     error, showResumeDialog, resumePosition,
     isPlaying, isLoading, progressPercent,
+    allEpisodes, hasPrev, hasNext,                      // S3B-2
     switchingSource,                                    // S3A-3
     loadMedia, play, pause, seek,
     switchEpisode, switchQuality,
