@@ -51,6 +51,12 @@ export const usePlayerStore = defineStore('player', () => {
 
   // ── Actions ──
 
+  /** S3A-1: 初始化 — 绑定已有 video 元素到播放引擎 */
+  function initialize(video: HTMLVideoElement): void {
+    if (!facade) facade = new PlayerFacade()
+    facade.initialize(video)
+  }
+
   async function loadMedia(
     media: MediaItem,
     detail: MediaDetail,
@@ -177,5 +183,6 @@ export const usePlayerStore = defineStore('player', () => {
     enableSubtitles, disableSubtitles,
     setVolume, toggleMute,
     destroy, clearError,
+    initialize,
   }
 })

@@ -22,12 +22,19 @@ export class PlayerEngine implements IPlayerEngine {
   private listeners = new Map<PlayerEvent, Set<EventCallback>>()
   private progressTimer: ReturnType<typeof setInterval> | null = null
   private _muted = false
+  /** S3A-1: 用户提供的已有 video 元素（可选 — 不提供则 adapter 自行创建） */
+  private userVideo: HTMLVideoElement | null = null
 
   // 公开回调
   onProgressSave?: (currentTime: number) => void
 
   constructor(config?: Partial<PlayerEngineConfig>) {
     this.config = { ...DEFAULT_PLAYER_CONFIG, ...config }
+  }
+
+  /** S3A-1: 设置已有 video 元素 — adapter 将复用而非创建新的 */
+  setVideoElement(video: HTMLVideoElement): void {
+    this.userVideo = video
   }
 
   // ==================== 公开方法 ====================
@@ -56,6 +63,11 @@ export class PlayerEngine implements IPlayerEngine {
       this.adapter = new HLSAdapter(container, callbacks, headers)
     } else {
       this.adapter = new MP4Adapter(container, callbacks)
+    }
+
+    // S3A-1: 如果用户提供了已有 video，adapter 复用而非创建新 video
+    if (this.userVideo) {
+      this.adapter.useExistingVideo(this.userVideo)
     }
 
     await this.adapter.load(url)

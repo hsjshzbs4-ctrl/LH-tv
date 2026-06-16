@@ -19,6 +19,7 @@ vi.mock('@/core/player/PlayerEngine', () => ({
     }))
     this.getVideoElement = vi.fn(() => null)
     this.setContainer = vi.fn()
+    this.setVideoElement = vi.fn()                 // S3A-1
     this.on = vi.fn(() => vi.fn())
     return this
   }),
@@ -61,8 +62,8 @@ describe('PlayerFacade', () => {
 
   describe('initialize/destroy', () => {
     it('should initialize without error', () => {
-      const el = document.createElement('div')
-      expect(() => facade.initialize(el)).not.toThrow()
+      const video = document.createElement('video')  // S3A-1: 必须传 video 元素
+      expect(() => facade.initialize(video)).not.toThrow()
     })
 
     it('should destroy cleanly', () => {

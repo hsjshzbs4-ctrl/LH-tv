@@ -3,6 +3,14 @@
   <div class="player-page" ref="containerRef" @mousemove="onMouseMove" @keydown="onKeydown" tabindex="0">
     <!-- 视频区域 -->
     <div class="video-area" ref="videoAreaRef" @click="togglePlay">
+      <!-- S3A-1: 唯一 <video> 元素 — PlayerEngine 复用此元素 -->
+      <video
+        ref="videoEl"
+        class="video-el"
+        :controls="false"
+        playsinline
+      ></video>
+
       <!-- 加载中 -->
       <div v-if="store.isLoading" class="overlay-center">
         <LoadingSpinner />
@@ -126,6 +134,8 @@ const store = usePlayerStore()
 
 const containerRef = ref<HTMLElement | null>(null)
 const videoAreaRef = ref<HTMLElement | null>(null)
+/** S3A-1: 唯一 video 元素 ref */
+const videoEl = ref<HTMLVideoElement | null>(null)
 const showControls = ref(true)
 const showEpisodePanel = ref(false)
 let hideTimer: ReturnType<typeof setTimeout> | null = null
@@ -264,6 +274,11 @@ onMounted(async () => {
         type: 'movie' as const,
       }
 
+      // S3A-1: 必须在 loadMedia 之前绑定 video 元素
+      if (videoEl.value) {
+        store.initialize(videoEl.value)
+      }
+
       await store.loadMedia(media, detail, episode, playUrl)
 
       // 绑定 video 元素
@@ -301,6 +316,14 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* S3A-1: 唯一 video 元素样式 */
+.video-el {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
 }
 
 .overlay-center {

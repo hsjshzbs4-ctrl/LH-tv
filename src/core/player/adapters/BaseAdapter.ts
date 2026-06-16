@@ -14,18 +14,22 @@ export abstract class BaseAdapter implements IPlayerAdapter {
     this.callbacks = callbacks
   }
 
-  /** 创建 video 元素并挂载到容器 */
-  protected createVideoElement(): HTMLVideoElement {
+  /** S3A-1: 使用已有 video 元素（不创建新的） */
+  useExistingVideo(video: HTMLVideoElement): void {
+    // 清理旧 video
+    if (this.video) {
+      this.video.pause()
+      this.video.src = ''
+      this.video.remove()
+    }
+    this.video = video
     this.container.innerHTML = ''
-    const video = document.createElement('video')
-    video.controls = false
-    video.style.width = '100%'
-    video.style.height = '100%'
-    video.style.objectFit = 'contain'
-    video.setAttribute('playsinline', '')
     this.container.appendChild(video)
+    this.bindVideoEvents(video)
+  }
 
-    // 绑定事件
+  /** S3A-1: 绑定 video 元素事件（createVideoElement 和 useExistingVideo 共用） */
+  private bindVideoEvents(video: HTMLVideoElement): void {
     video.addEventListener('loadedmetadata', () => {
       this.callbacks.onReady?.()
     })
@@ -53,7 +57,19 @@ export abstract class BaseAdapter implements IPlayerAdapter {
     video.addEventListener('canplay', () => {
       this.callbacks.onBuffering?.(false)
     })
+  }
 
+  /** 创建 video 元素并挂载到容器 */
+  protected createVideoElement(): HTMLVideoElement {
+    this.container.innerHTML = ''
+    const video = document.createElement('video')
+    video.controls = false
+    video.style.width = '100%'
+    video.style.height = '100%'
+    video.style.objectFit = 'contain'
+    video.setAttribute('playsinline', '')
+    this.container.appendChild(video)
+    this.bindVideoEvents(video)
     this.video = video
     return video
   }

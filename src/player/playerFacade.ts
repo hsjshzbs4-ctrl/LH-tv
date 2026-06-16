@@ -45,11 +45,10 @@ export class PlayerFacade {
 
   // ── 初始化/销毁 ──
 
-  /** 初始化：绑定 video 元素到 container */
-  initialize(container: HTMLElement): void {
-    this.engine.attachElement(container)
-    const video = this.engine.getVideoElement()
-    if (video) this.subtitle.attachVideo(video)
+  /** S3A-1: 初始化 — 绑定已有 video 元素到播放引擎 */
+  initialize(video: HTMLVideoElement): void {
+    this.engine.setVideoElement(video)
+    this.subtitle.attachVideo(video)
   }
 
   /** 销毁 */

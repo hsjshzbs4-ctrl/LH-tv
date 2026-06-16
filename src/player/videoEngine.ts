@@ -58,6 +58,9 @@ export class VideoEngine {
 
   attachElement(el: HTMLElement): void { this.engine.setContainer(el) }
 
+  /** S3A-1: 设置已有 video 元素 — engine 将复用而非创建新的 */
+  setVideoElement(video: HTMLVideoElement): void { this.engine.setVideoElement(video) }
+
   // ── 事件（代理）──
 
   on(event: PlayerEvent, cb: (data?: unknown) => void): () => void {
