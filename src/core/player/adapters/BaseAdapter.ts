@@ -3,11 +3,19 @@
 
 import type { IPlayerAdapter, AdapterEventCallbacks } from '../types/adapter.types'
 
+/** S3B-5: 存储事件 handler 引用以便移除 */
+interface VideoEventBinding {
+  event: string
+  handler: EventListener
+}
+
 export abstract class BaseAdapter implements IPlayerAdapter {
   protected video: HTMLVideoElement | null = null
   protected container: HTMLElement
   protected callbacks: AdapterEventCallbacks
   protected _paused = true
+  /** S3B-5: 记录所有已绑定的 handler 以便 destroy 时移除 */
+  private _bindings: VideoEventBinding[] = []
 
   constructor(container: HTMLElement, callbacks: AdapterEventCallbacks = {}) {
     this.container = container
@@ -16,7 +24,8 @@ export abstract class BaseAdapter implements IPlayerAdapter {
 
   /** S3A-1: 使用已有 video 元素（不创建新的） */
   useExistingVideo(video: HTMLVideoElement): void {
-    // 清理旧 video
+    // 清理旧 video 及其事件监听
+    this._unbindAll()
     if (this.video) {
       this.video.pause()
       this.video.src = ''
@@ -28,35 +37,60 @@ export abstract class BaseAdapter implements IPlayerAdapter {
     this.bindVideoEvents(video)
   }
 
-  /** S3A-1: 绑定 video 元素事件（createVideoElement 和 useExistingVideo 共用） */
+  /** S3B-5: 绑定 video 元素事件（createVideoElement 和 useExistingVideo 共用）
+   *  使用命名 handler 存储引用，保证 destroy/rebind 时可以精确移除 */
   private bindVideoEvents(video: HTMLVideoElement): void {
-    video.addEventListener('loadedmetadata', () => {
-      this.callbacks.onReady?.()
-    })
-    video.addEventListener('play', () => {
-      this._paused = false
-      this.callbacks.onPlay?.()
-    })
-    video.addEventListener('pause', () => {
-      this._paused = true
-      this.callbacks.onPause?.()
-    })
-    video.addEventListener('timeupdate', () => {
-      this.callbacks.onTimeUpdate?.(video.currentTime)
-    })
-    video.addEventListener('ended', () => {
-      this.callbacks.onEnded?.()
-    })
-    video.addEventListener('error', () => {
+    // loadedmetadata
+    const onMeta = () => { this.callbacks.onReady?.() }
+    video.addEventListener('loadedmetadata', onMeta)
+    this._bindings.push({ event: 'loadedmetadata', handler: onMeta })
+
+    // play
+    const onPlay = () => { this._paused = false; this.callbacks.onPlay?.() }
+    video.addEventListener('play', onPlay)
+    this._bindings.push({ event: 'play', handler: onPlay })
+
+    // pause
+    const onPause = () => { this._paused = true; this.callbacks.onPause?.() }
+    video.addEventListener('pause', onPause)
+    this._bindings.push({ event: 'pause', handler: onPause })
+
+    // timeupdate
+    const onTime = () => { this.callbacks.onTimeUpdate?.(video.currentTime) }
+    video.addEventListener('timeupdate', onTime)
+    this._bindings.push({ event: 'timeupdate', handler: onTime })
+
+    // ended
+    const onEnded = () => { this.callbacks.onEnded?.() }
+    video.addEventListener('ended', onEnded)
+    this._bindings.push({ event: 'ended', handler: onEnded })
+
+    // error
+    const onError = () => {
       const msg = video.error?.message || '视频加载失败'
       this.callbacks.onError?.(msg)
-    })
-    video.addEventListener('waiting', () => {
-      this.callbacks.onBuffering?.(true)
-    })
-    video.addEventListener('canplay', () => {
-      this.callbacks.onBuffering?.(false)
-    })
+    }
+    video.addEventListener('error', onError)
+    this._bindings.push({ event: 'error', handler: onError })
+
+    // waiting
+    const onWaiting = () => { this.callbacks.onBuffering?.(true) }
+    video.addEventListener('waiting', onWaiting)
+    this._bindings.push({ event: 'waiting', handler: onWaiting })
+
+    // canplay
+    const onCanPlay = () => { this.callbacks.onBuffering?.(false) }
+    video.addEventListener('canplay', onCanPlay)
+    this._bindings.push({ event: 'canplay', handler: onCanPlay })
+  }
+
+  /** S3B-5: 移除所有已绑定的 video 事件监听器 */
+  private _unbindAll(): void {
+    if (!this.video) return
+    for (const { event, handler } of this._bindings) {
+      this.video.removeEventListener(event, handler)
+    }
+    this._bindings = []
   }
 
   /** 创建 video 元素并挂载到容器 */
@@ -126,7 +160,9 @@ export abstract class BaseAdapter implements IPlayerAdapter {
     return this._paused
   }
 
+  /** S3B-5: 彻底清理 — 移除所有事件监听器 + 销毁 video */
   destroy(): void {
+    this._unbindAll()
     if (this.video) {
       this.video.pause()
       this.video.src = ''
@@ -134,5 +170,6 @@ export abstract class BaseAdapter implements IPlayerAdapter {
       this.video = null
     }
     this.container.innerHTML = ''
+    this.callbacks = {}
   }
 }

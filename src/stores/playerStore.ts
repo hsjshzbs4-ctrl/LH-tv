@@ -12,6 +12,8 @@ import type { PlaybackSource } from '@/core/playback'  // S3A-3
 export const usePlayerStore = defineStore('player', () => {
   // ── 实例 ──
   let facade: PlayerFacade | null = null
+  /** S3B-5: 存储所有事件取消订阅函数，destroy 时批量清理 */
+  const _unsubs: (() => void)[] = []
 
   // ── 状态 ──
   const currentMedia = ref<MediaItem | null>(null)
@@ -98,7 +100,7 @@ export const usePlayerStore = defineStore('player', () => {
     currentEpisode.value = facade.episodes.currentEpisode
 
     // S3A-3: 订阅源切换事件（UI 可显示切换状态）
-    facade.onSourceSwitch((data) => {
+    _unsubs.push(facade.onSourceSwitch((data) => {
       if (data.event === 'switching') {
         switchingSource.value = true
       } else {
@@ -111,7 +113,7 @@ export const usePlayerStore = defineStore('player', () => {
         toSource: data.toSource,
         reason: data.reason,
       })
-    })
+    }))
 
     // S3B-3: 定期保存进度（Engine 每 15s 触发 → ResumeManager 持久化）
     facade.engine.onProgressSave = (time: number) => {
@@ -125,16 +127,16 @@ export const usePlayerStore = defineStore('player', () => {
       }
     }
 
-    // 事件绑定
-    facade.on('player:timeupdate' as never, () => {
+    // 事件绑定 (S3B-5: 收集 unsubscribe 函数)
+    _unsubs.push(facade.on('player:timeupdate' as never, () => {
       currentTime.value = facade!.currentTime
       progress.value = facade!.duration > 0 ? facade!.currentTime / facade!.duration : 0
-    })
-    facade.on('player:play' as never, () => {
+    }))
+    _unsubs.push(facade.on('player:play' as never, () => {
       playbackState.value = PlaybackState.PLAYING
       emitTelemetry(PlayerTelemetryEvent.PLAYER_PLAY, { mediaId: media.id })
-    })
-    facade.on('player:pause' as never, () => {
+    }))
+    _unsubs.push(facade.on('player:pause' as never, () => {
       playbackState.value = PlaybackState.PAUSED
       emitTelemetry(PlayerTelemetryEvent.PLAYER_PAUSE)
       // S3B-3: 暂停时保存进度
@@ -146,8 +148,8 @@ export const usePlayerStore = defineStore('player', () => {
           facade!.duration,
         )
       }
-    })
-    facade.on('player:ended' as never, () => {
+    }))
+    _unsubs.push(facade.on('player:ended' as never, () => {
       playbackState.value = PlaybackState.ENDED
       emitTelemetry(PlayerTelemetryEvent.PLAYER_COMPLETE)
       if (facade!.episodes.shouldAutoPlayNext()) {
@@ -157,10 +159,10 @@ export const usePlayerStore = defineStore('player', () => {
           switchEpisode(next, next.url)
         }
       }
-    })
+    }))
     // S3A-3: 错误回调 — 先尝试切换源，耗尽后才设置 error
     // S3A-3 审核修正: switchingSource 同时充当防重入锁
-    facade.on('player:error' as never, async () => {
+    _unsubs.push(facade.on('player:error' as never, async () => {
       if (switchingSource.value) return  // 已在切换中，忽略重复 error
       if (facade!.hasMoreSources) {
         switchingSource.value = true
@@ -172,11 +174,11 @@ export const usePlayerStore = defineStore('player', () => {
       error.value = facade!.remainingRetries <= 0
         ? '所有播放源均已尝试，播放失败'
         : '播放出错'
-    })
+    }))
     // S3A-3: 就绪回调 — 标记源成功
-    facade.on('player:ready' as never, () => {
+    _unsubs.push(facade.on('player:ready' as never, () => {
       facade?.markSourceSuccess()
-    })
+    }))
 
     // 续播检测
     const savedPos = await facade.resume.loadPosition(episode.id)
@@ -258,6 +260,11 @@ export const usePlayerStore = defineStore('player', () => {
         facade.duration,
       )
     }
+    // S3B-5: 清除 onProgressSave 回调（防止定时器引用已销毁的 store）
+    if (facade) facade.engine.onProgressSave = undefined
+    // S3B-5: 批量取消所有事件订阅
+    _unsubs.forEach(fn => { try { fn() } catch { /* 静默 */ } })
+    _unsubs.length = 0
     facade?.session.end()
     facade?.destroy()
     facade = null

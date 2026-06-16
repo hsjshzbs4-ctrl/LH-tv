@@ -104,6 +104,9 @@ export class PlayerEngine implements IPlayerEngine {
       this.adapter = null
     }
     this.emit(PlayerEvent.DESTROY)
+    this.userVideo = null
+    // S3B-5 note: listeners Map 由外部 owner (VideoEngine → PlayerFacade) 生命周期管理
+    // 不在 destroy() 清除 — load() 内部调用 destroy() 复用 engine 时不能清空 listeners
   }
 
   setVolume(vol: number): void {
