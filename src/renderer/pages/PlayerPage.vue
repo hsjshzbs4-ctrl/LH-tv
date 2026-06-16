@@ -262,7 +262,7 @@ onMounted(async () => {
       const { mediaLibraryService } = await import('@/content/mediaLibrary')
       const detail = await mediaLibraryService.getDetail(providerId, mediaId)
       const episode = detail.episodes.find(e => e.id === episodeId) || detail.episodes[0]
-      const playUrl = '' /* playUrl 由外部 provider 提供 */
+      const playUrl = episode.url || ''  // S3A-2: 从 MediaEpisode.url 获取播放地址
 
       // 构建 MediaItem
       const media = {

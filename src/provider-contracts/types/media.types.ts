@@ -31,6 +31,8 @@ export interface MediaEpisode {
   id: string
   title: string
   episodeNumber?: number
+  /** S3A-2: 播放地址 */
+  url?: string
 }
 
 /** 聚合搜索结果 */

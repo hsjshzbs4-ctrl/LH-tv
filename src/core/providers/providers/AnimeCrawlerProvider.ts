@@ -51,6 +51,7 @@ export class AnimeCrawlerProvider extends BaseProvider {
             id: `${raw.id}_${ep.number}`,
             title: ep.label,
             episodeNumber: ep.number,
+            url: ep.url,                                     // S3A-2: 保留播放 URL
           })
         }
       }
