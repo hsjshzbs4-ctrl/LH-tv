@@ -65,7 +65,14 @@
           </button>
           <button class="ctrl-btn" @click="prevEpisode" :disabled="!hasPrev" title="上一集">⏮</button>
           <button class="ctrl-btn" @click="nextEpisode" :disabled="!hasNext" title="下一集">⏭</button>
-          <span class="episode-label" v-if="store.currentEpisode">
+          <!-- S3A-5: 剧集面板入口 -->
+          <button
+            class="ctrl-btn"
+            :class="{ active: showEpisodePanel }"
+            @click="showEpisodePanel = !showEpisodePanel"
+            title="剧集列表 (E)"
+          >📺</button>
+          <span class="episode-label" v-if="store.currentEpisode && !showEpisodePanel">
             {{ store.currentEpisode.title || '第' + store.currentEpisode.episodeNumber + '集' }}
           </span>
         </div>
@@ -242,6 +249,10 @@ function onKeydown(e: KeyboardEvent) {
     case 'KeyN':
       e.preventDefault()
       nextEpisode()
+      break
+    case 'KeyE':
+      e.preventDefault()
+      showEpisodePanel.value = !showEpisodePanel.value  // S3A-5
       break
   }
 }
