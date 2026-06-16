@@ -38,6 +38,11 @@ export class QualityManager {
     this.hlsInstance = hls
   }
 
+  /** S3B-1: 解绑旧 HLS 实例 — 切源/销毁前调用，防止操作已销毁的 hls */
+  unbindHLS(): void {
+    this.hlsInstance = null
+  }
+
   /** 应用画质到 HLS 实例 */
   private applyToHLS(): void {
     if (!this.hlsInstance) return

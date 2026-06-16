@@ -118,6 +118,7 @@ export class PlayerFacade {
     const savedPos = await this.resume.loadPosition(episode.id)
 
     this.session.begin(media.id, episode.id, media.providerId)
+    this._prepareLoad()
     await this.engine.loadSource(this._playUrl)
 
     if (savedPos > 0 && this.resume.shouldResume(savedPos)) {
@@ -139,7 +140,8 @@ export class PlayerFacade {
       this.sourceSwitch.saveProgress(this.engine.currentTime)
 
       this._playUrl = nextSource.playUrl
-      await this.engine.loadSource(this._playUrl)
+      this._prepareLoad()
+    await this.engine.loadSource(this._playUrl)
 
       // 恢复播放进度
       const savedProgress = this.sourceSwitch.getSavedProgress()
@@ -160,6 +162,11 @@ export class PlayerFacade {
     }
   }
 
+  /** S3B-1: 加载前准备 — 解绑旧 HLS，防止切换窗口期操作已销毁实例 */
+  private _prepareLoad(): void {
+    this.quality.unbindHLS()
+  }
+
   /** 切换剧集 */
   async switchEpisode(episode: MediaEpisode, playUrl: string): Promise<void> {
     this.session.end()
@@ -169,6 +176,7 @@ export class PlayerFacade {
     if (this._media) {
       this.session.begin(this._media.id, episode.id, this._media.providerId)
     }
+    this._prepareLoad()
     await this.engine.loadSource(playUrl)
   }
 
