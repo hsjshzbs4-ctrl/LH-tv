@@ -281,7 +281,17 @@ onMounted(async () => {
       const { mediaLibraryService } = await import('@/content/mediaLibrary')
       const detail = await mediaLibraryService.getDetail(providerId, mediaId)
       const episode = detail.episodes.find(e => e.id === episodeId) || detail.episodes[0]
-      const playUrl = episode.url || ''  // S3A-2: 从 MediaEpisode.url 获取播放地址
+      const playUrl = (episode.url || '').trim()
+
+      if (!playUrl) {
+        const fallback = detail.episodes.find(e => e.url && e.url.trim())
+        if (fallback) {
+          console.warn(`[Player] Episode "${episode.title}" has no URL, falling back to "${fallback.title}"`)
+          Object.assign(episode, fallback)
+        } else {
+          throw new Error('该影片暂无可用播放源 — API 未返回播放地址，请尝试其他影片')
+        }
+      }
 
       // 构建 MediaItem
       const media = {
@@ -298,7 +308,7 @@ onMounted(async () => {
         store.initialize(videoEl.value)
       }
 
-      await store.loadMedia(media, detail, episode, playUrl)
+      await store.loadMedia(media, detail, episode, episode.url!.trim())
 
       // 绑定 video 元素
       if (containerRef.value) {

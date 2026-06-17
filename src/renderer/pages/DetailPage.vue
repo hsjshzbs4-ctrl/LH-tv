@@ -49,11 +49,14 @@
       </div>
 
       <!-- 剧集列表 -->
-      <div v-if="store.detailItem.episodes.length > 0" class="episodes-section">
+      <div v-if="playableEpisodes.length > 0" class="episodes-section">
         <h2 class="section-title">📺 剧集列表</h2>
+        <p v-if="skippedCount > 0" style="color:var(--color-text-tertiary);font-size:12px;margin-bottom:8px">
+          已过滤 {{ skippedCount }} 个无播放源的剧集
+        </p>
         <div class="episode-grid">
           <button
-            v-for="ep in store.detailItem.episodes"
+            v-for="ep in playableEpisodes"
             :key="ep.id"
             class="episode-btn"
             @click="goToPlay(ep.id)"
@@ -67,7 +70,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import LoadingSpinner from '@/components/common/LoadingSpinner.vue'
 import ErrorState from '@/components/common/ErrorState.vue'
@@ -77,6 +80,16 @@ import type { MediaItem } from '@/content'
 const router = useRouter()
 const route = useRoute()
 const store = useContentStore()
+
+const playableEpisodes = computed(() => {
+  if (!store.detailItem?.episodes) return []
+  return store.detailItem.episodes.filter(e => e.url && e.url.trim())
+})
+
+const skippedCount = computed(() => {
+  if (!store.detailItem?.episodes) return 0
+  return store.detailItem.episodes.length - playableEpisodes.value.length
+})
 
 async function toggleFav() {
   if (!store.detailItem) return
