@@ -2,6 +2,7 @@
 import { createRouter, createMemoryHistory, type RouteRecordRaw } from 'vue-router'
 import { marketplaceRoutes } from '@/features/marketplace/routes'
 import { developerPortalRoutes } from '@developer-platform/routes'
+import { aiRoutes } from '@/ai/aiRoutes'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -99,6 +100,9 @@ const routes: RouteRecordRaw[] = [
 
   // P5.3 Developer Portal Routes
   ...developerPortalRoutes,
+
+  // PB6 AI Routes
+  ...aiRoutes,
 
   {
     path: '/:pathMatch(.*)*',
