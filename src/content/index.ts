@@ -19,6 +19,7 @@ export type {
 
 export {
   CATEGORY_SUB_MAP,
+  SUB_LABELS,
   CATEGORY_LABELS,
 } from './contentTypes'
 

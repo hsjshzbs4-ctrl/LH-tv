@@ -10,7 +10,7 @@
         :class="{ active: sub === store.activeSubCategory }"
         @click="switchSub(sub)"
       >
-        {{ sub.toUpperCase() }}
+        {{ SUB_LABELS[sub] || sub.toUpperCase() }}
       </button>
     </div>
 
@@ -49,7 +49,7 @@ import PosterCard from '@/components/cards/PosterCard.vue'
 import SkeletonCard from '@/components/cards/SkeletonCard.vue'
 import EmptyState from '@/components/common/EmptyState.vue'
 import { useContentStore } from '@/stores/contentStore'
-import { categoryService } from '@/content'
+import { categoryService, SUB_LABELS } from '@/content'
 import type { ContentCategory } from '@/content'
 
 const router = useRouter()

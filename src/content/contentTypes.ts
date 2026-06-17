@@ -76,6 +76,16 @@ export const CATEGORY_SUB_MAP: Record<ContentCategory, string[]> = {
   documentary: ['cn', 'us', 'other'],
 }
 
+/** 子分类显示标签 (API key → 中文名) */
+export const SUB_LABELS: Record<string, string> = {
+  cn: '中国',
+  us: '美国',
+  kr: '韩国',
+  jp: '日本',
+  other: '其他',
+  all: '全部',
+}
+
 /** 分类显示标签 */
 export const CATEGORY_LABELS: Record<ContentCategory, string> = {
   movie: '电影',
