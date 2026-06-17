@@ -1,19 +1,6 @@
 <!-- src/renderer/pages/CategoryPage.vue - PB1.5 统一分类页 -->
 <template>
   <div class="category-page">
-    <!-- 分类标签栏 -->
-    <div class="category-tabs">
-      <button
-        v-for="cat in allCategories"
-        :key="cat"
-        class="tab-btn"
-        :class="{ active: cat === store.activeCategory }"
-        @click="switchCategory(cat)"
-      >
-        {{ getIcon(cat) }} {{ getLabel(cat) }}
-      </button>
-    </div>
-
     <!-- 子分类标签 -->
     <div class="sub-tabs" v-if="store.categorySubs.length > 1">
       <button
@@ -56,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import PosterCard from '@/components/cards/PosterCard.vue'
 import SkeletonCard from '@/components/cards/SkeletonCard.vue'
@@ -69,22 +56,8 @@ const router = useRouter()
 const route = useRoute()
 const store = useContentStore()
 
-const allCategories = computed(() => categoryService.getAllCategories())
-
-const CATEGORY_ICONS: Record<ContentCategory, string> = {
-  movie: '🎬', tv: '📺', anime: '🎌', variety: '🎭', documentary: '📖',
-}
-
-function getIcon(cat: ContentCategory): string {
-  return CATEGORY_ICONS[cat] || '📁'
-}
-
 function getLabel(cat: ContentCategory): string {
   return categoryService.getCategoryLabel(cat)
-}
-
-async function switchCategory(cat: ContentCategory) {
-  await store.loadCategory(cat)
 }
 
 async function switchSub(sub: string) {
@@ -122,37 +95,6 @@ onMounted(async () => {
 <style scoped>
 .category-page {
   padding: 8px 0 32px;
-}
-
-.category-tabs {
-  display: flex;
-  gap: 8px;
-  padding: 0 16px 16px;
-  overflow-x: auto;
-}
-
-.tab-btn {
-  flex-shrink: 0;
-  padding: 8px 20px;
-  font-size: 15px;
-  border: 1px solid var(--color-border, #333);
-  border-radius: 20px;
-  background: transparent;
-  color: var(--color-text-secondary, #888);
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.tab-btn.active {
-  background: var(--color-accent, #e8a850);
-  color: #000;
-  border-color: var(--color-accent, #e8a850);
-  font-weight: 600;
-}
-
-.tab-btn:hover:not(.active) {
-  color: var(--color-text, #fff);
-  border-color: var(--color-text-secondary, #666);
 }
 
 .sub-tabs {
