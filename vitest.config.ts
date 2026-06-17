@@ -11,6 +11,8 @@ export default defineConfig({
       '@shared': resolve(__dirname, 'src/shared'),
       '@provider-contracts': resolve(__dirname, 'src/provider-contracts/index.ts'),
       '@developer-platform': resolve(__dirname, 'developer-platform'),
+      '@platform': resolve(__dirname, 'src/platform'),
+      '@ai': resolve(__dirname, 'src/ai'),
     },
   },
   test: {

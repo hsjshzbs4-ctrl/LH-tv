@@ -19,7 +19,9 @@
       "@provider-contracts": ["src/provider-contracts/index.ts"],
       "@provider-contracts/*": ["src/provider-contracts/*"],
       "@developer-platform": ["developer-platform/index.ts"],
-      "@developer-platform/*": ["developer-platform/*"]
+      "@developer-platform/*": ["developer-platform/*"],
+      "@platform/*": ["src/platform/*"],
+      "@ai/*": ["src/ai/*"]
     },
     "types": ["electron-vite/node"]
   },

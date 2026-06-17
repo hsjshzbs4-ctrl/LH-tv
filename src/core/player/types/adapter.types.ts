@@ -20,6 +20,9 @@ export interface IPlayerAdapter {
   /** 加载视频源 */
   load(url: string): Promise<void>
 
+  /** S3A-1: 复用已有 video 元素（不创建新的） */
+  useExistingVideo(video: HTMLVideoElement): void
+
   /** 播放 */
   play(): Promise<void>
 
