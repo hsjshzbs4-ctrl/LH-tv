@@ -28,6 +28,7 @@
 
 <script setup lang="ts">
 import { ref, watch, nextTick } from 'vue'
+import { aiOrchestrator } from '../orchestrator/AIOrchestrator'
 
 defineProps<{ visible: boolean }>()
 defineEmits<{ close: [] }>()
@@ -37,25 +38,38 @@ const loading = ref(false)
 const messages = ref<Array<{ role: string; content: string }>>([])
 const msgContainer = ref<HTMLElement>()
 
-function send() {
+async function send() {
   if (!input.value.trim() || loading.value) return
-  messages.value.push({ role: 'user', content: input.value })
+  const query = input.value
+  messages.value.push({ role: 'user', content: query })
   input.value = ''
   loading.value = true
 
-  // Mock response — Phase 6 Bootstrap wires real AIOrchestrator
-  setTimeout(() => {
+  try {
+    if (aiOrchestrator.isAvailable()) {
+      const response = await aiOrchestrator.ask(query, {
+        currentMedia: { title: 'LH-TV' },
+      })
+      messages.value.push({ role: 'assistant', content: response.text })
+    } else {
+      messages.value.push({
+        role: 'assistant',
+        content: '[PB6] AI 未启用。请在设置中开启 pb5.ai Feature Flag 或配置 AI Provider。',
+      })
+    }
+  } catch (err) {
     messages.value.push({
       role: 'assistant',
-      content: '[PB6] AI 助手正在启动中。请在设置中配置 AI Provider 后使用完整功能。',
+      content: `[错误] ${String(err)}`,
     })
+  } finally {
     loading.value = false
     nextTick(() => {
       if (msgContainer.value) {
         msgContainer.value.scrollTop = msgContainer.value.scrollHeight
       }
     })
-  }, 500)
+  }
 }
 
 watch(() => messages.value.length, () => {

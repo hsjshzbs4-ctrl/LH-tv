@@ -44,6 +44,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { storageService } from '@/shared/storage/storage.service'
 
 const provider = ref('mock')
 const apiKey = ref('')
@@ -52,10 +53,22 @@ const temperature = ref(0.7)
 const maxTokens = ref(1024)
 const saved = ref(false)
 
-function save() {
-  // Phase 6 Bootstrap: 写入 storageService.settings
-  saved.value = true
-  setTimeout(() => saved.value = false, 2000)
+async function save() {
+  try {
+    await storageService.setSettings({
+      pb6_ai_config: JSON.stringify({
+        provider: provider.value,
+        apiKey: apiKey.value,
+        model: model.value,
+        temperature: temperature.value,
+        maxTokens: maxTokens.value,
+      }),
+    })
+    saved.value = true
+    setTimeout(() => saved.value = false, 2000)
+  } catch {
+    saved.value = false
+  }
 }
 </script>
 
