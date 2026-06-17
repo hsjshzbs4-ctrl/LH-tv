@@ -11,6 +11,13 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/renderer/pages/HomePage.vue'),
     meta: { title: '首页', icon: '🏠', keepAlive: true }
   },
+  // ── 影视分类（动漫 · 电视剧 · 电影）──
+  {
+    path: '/anime',
+    name: 'anime',
+    component: () => import('@/renderer/pages/CategoryPage.vue'),
+    meta: { title: '动漫', icon: '🎌', keepAlive: true, category: 'anime' as const }
+  },
   {
     path: '/tv',
     name: 'tv',
@@ -22,12 +29,6 @@ const routes: RouteRecordRaw[] = [
     name: 'movies',
     component: () => import('@/renderer/pages/CategoryPage.vue'),
     meta: { title: '电影', icon: '🎬', keepAlive: true, category: 'movie' as const }
-  },
-  {
-    path: '/anime',
-    name: 'anime',
-    component: () => import('@/renderer/pages/CategoryPage.vue'),
-    meta: { title: '动漫', icon: '🎌', keepAlive: true, category: 'anime' as const }
   },
   {
     path: '/search',
