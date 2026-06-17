@@ -21,7 +21,8 @@
       "@developer-platform": ["developer-platform/index.ts"],
       "@developer-platform/*": ["developer-platform/*"],
       "@platform/*": ["src/platform/*"],
-      "@ai/*": ["src/ai/*"]
+      "@ai/*": ["src/ai/*"],
+      "@ecosystem/*": ["src/ecosystem/*"]
     },
     "types": ["electron-vite/node"]
   },

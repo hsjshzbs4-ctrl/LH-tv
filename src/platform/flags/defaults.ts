@@ -71,6 +71,15 @@ export const PB5_DEFAULT_FLAGS: FeatureFlag[] = [
     runtimeToggle: true,
     dependencies: ['pb5.ai'],
   },
+  // ── PB7 Ecosystem Era ──
+  {
+    key: 'pb7.extension',
+    state: FeatureState.OFF,
+    description: 'PB7 Ecosystem Runtime — Extension sandbox + permission + marketplace registry',
+    subsystem: PB5Subsystem.ECOSYSTEM,
+    runtimeToggle: true,
+    dependencies: ['pb6.ai'],
+  },
 ]
 
 /** 按 key 快速索引 */

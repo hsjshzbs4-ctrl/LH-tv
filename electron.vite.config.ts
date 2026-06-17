@@ -53,6 +53,7 @@ export default defineConfig({
         '@developer-platform': resolve(__dirname, 'developer-platform'),
         '@platform': resolve(__dirname, 'src/platform'),
         '@ai': resolve(__dirname, 'src/ai'),
+        '@ecosystem': resolve(__dirname, 'src/ecosystem'),
       }
     }
   }

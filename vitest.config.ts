@@ -13,6 +13,7 @@ export default defineConfig({
       '@developer-platform': resolve(__dirname, 'developer-platform'),
       '@platform': resolve(__dirname, 'src/platform'),
       '@ai': resolve(__dirname, 'src/ai'),
+      '@ecosystem': resolve(__dirname, 'src/ecosystem'),
     },
   },
   test: {
@@ -31,6 +32,7 @@ export default defineConfig({
       'tests/marketplace/**/*.spec.ts',
       'tests/developer-platform/**/*.spec.ts',
       'tests/performance/**/*.spec.ts',
+      'tests/unit/ecosystem/**/*.spec.ts',
     ],
     // 全局 setup 在每个测试文件前运行
     setupFiles: [
