@@ -24,7 +24,15 @@ export class CategoryService {
     const subCategory = sub || CATEGORY_SUB_MAP[category][0] || 'all'
 
     try {
-      return await providerFacade.catalog(providerId, category, subCategory)
+      const items = await providerFacade.catalog(providerId, category, subCategory)
+      // HOTFIX-001: 客户端二次过滤 — 确保只返回匹配分类的内容
+      return items.filter(item => {
+        const itemType = item.type || ''
+        if (!itemType) return true // 没有 type 信息的保留
+        // 统一映射: movie→movie, tv→tv, anime→anime
+        const normalizedType = itemType.toLowerCase()
+        return normalizedType === category
+      })
     } catch {
       return []
     }

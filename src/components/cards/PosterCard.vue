@@ -3,12 +3,12 @@
   <div class="poster-card" @click="$emit('click')" :title="name">
     <div class="poster-img-wrapper">
       <img
-        v-if="image && !imgError"
-        :src="image"
+        v-if="safeImage && !imgErrorRef"
+        :src="safeImage"
         :alt="name"
         class="poster-img"
         loading="lazy"
-        @error="imgError = true"
+        @error="imgErrorRef = true"
       />
       <div v-else class="poster-placeholder" :style="{ background: bgColor }">
         {{ initial }}
@@ -40,7 +40,26 @@ defineEmits<{ click: [] }>()
 
 const imgError = ref(false)
 
-const initial = computed(() => (props.name || '影').charAt(0))
+// HOTFIX-001: 校验封面 URL 有效性，减少误判
+function isValidImageUrl(url: string | undefined): boolean {
+  if (!url || url.trim() === '') return false
+  // 过滤 Electron file:// 等不可用协议
+  if (url.startsWith('file://') && url.includes('undefined')) return false
+  return true
+}
+
+const safeImage = computed(() => {
+  if (!props.image) return null
+  return isValidImageUrl(props.image) ? props.image : null
+})
+
+const imgErrorRef = ref(false)
+
+const initial = computed(() => {
+  if (!props.name) return '影'
+  // 取中文首字或英文首字母
+  return props.name.trim().charAt(0)
+})
 
 const CARD_COLORS = ['#e74c3c', '#e67e22', '#f1c40f', '#2ecc71', '#3498db', '#9b59b6', '#1abc9c', '#e91e63']
 
