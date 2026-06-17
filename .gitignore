@@ -1,7 +1,7 @@
 node_modules/
 out/
 dist/
-data/
+/data/
 *.tsbuildinfo
 .DS_Store
 Thumbs.db
