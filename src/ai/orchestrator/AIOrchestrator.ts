@@ -1,29 +1,48 @@
 // src/ai/orchestrator/AIOrchestrator.ts — AI 编排器
-// PB5 Auth v2: MockProvider only, 禁止真实模型
+// PB6: 通过 ModelGateway 路由，不再硬编码 createProvider()
 
-import { AICapability, type IAIProvider, type AIResponse, type AIContext, type AIModelConfig } from '../types/ai.types'
+import { AICapability, type AIResponse, type AIContext, type AIModelConfig } from '../types/ai.types'
 import { promptManager } from '../prompt/PromptManager'
 import { conversationManager } from '../conversation/ConversationManager'
+import { modelGateway } from '../provider/ModelGateway'
 import { MockAIProvider } from '../provider/MockAIProvider'
-import { featureFlagManager, FeatureState } from '@platform/flags'
+import { featureFlagManager } from '@platform/flags'
 
 export class AIOrchestrator {
-  private provider: IAIProvider | null = null
   private initialized = false
+  private activeProvider: string = 'mock'
 
-  /** 初始化 (由应用启动调用) */
+  /** 初始化 — 注册 Provider 到 ModelGateway */
   async initialize(config?: AIModelConfig): Promise<void> {
     if (!featureFlagManager.isEnabled('pb5.ai')) return
     if (this.initialized) return
 
     const providerConfig = config ?? { provider: 'mock' }
-    this.provider = this.createProvider(providerConfig.provider)
-    await this.provider.initialize(providerConfig)
+
+    // 注册 Mock Provider (安全回退)
+    modelGateway.register('mock', new MockAIProvider())
+    await modelGateway.initializeProvider('mock', { provider: 'mock' })
+
+    // 如果配置了真实 Provider，注册并初始化
+    if (providerConfig.provider !== 'mock') {
+      // Provider 由 ModelGateway.register() 外部注册 (通过 UI Settings)
+      // 这里只设置活跃 Provider
+      this.activeProvider = providerConfig.provider
+    }
 
     this.initialized = true
   }
 
-  /** 提问 */
+  /** 设置活跃 Provider */
+  setActiveProvider(providerName: string): void {
+    if (modelGateway.getProvider(providerName)) {
+      this.activeProvider = providerName
+    } else {
+      throw new Error(`Provider "${providerName}" not registered in ModelGateway`)
+    }
+  }
+
+  /** 提问 — 通过 ModelGateway */
   async ask(query: string, context?: AIContext): Promise<AIResponse> {
     this.ensureInitialized()
 
@@ -39,10 +58,17 @@ export class AIOrchestrator {
       conversationManager.createThread('AI 对话')
     }
     conversationManager.sendMessage(null, 'user', query)
-    const response = await this.provider!.complete(prompt, context)
-    conversationManager.sendMessage(null, 'assistant', response.text)
 
-    return response
+    const result = await modelGateway.complete({
+      prompt,
+      context,
+      providerName: this.activeProvider,
+      config: { provider: this.activeProvider as AIModelConfig['provider'] },
+      caller: 'AIOrchestrator',
+    })
+
+    conversationManager.sendMessage(null, 'assistant', result.response.text)
+    return result.response
   }
 
   /** 总结剧集 */
@@ -55,9 +81,15 @@ export class AIOrchestrator {
       genre: genre?.join(', ') ?? '',
     })
 
-    return this.provider!.complete(prompt, {
-      currentMedia: { title: mediaTitle, year, genre },
+    const result = await modelGateway.complete({
+      prompt,
+      context: { currentMedia: { title: mediaTitle, year, genre } },
+      providerName: this.activeProvider,
+      config: { provider: this.activeProvider as AIModelConfig['provider'] },
+      caller: 'AIOrchestrator',
     })
+
+    return result.response
   }
 
   /** 推荐 */
@@ -68,7 +100,14 @@ export class AIOrchestrator {
       preferences: '基于历史数据',
     })
 
-    return this.provider!.complete(prompt)
+    const result = await modelGateway.complete({
+      prompt,
+      providerName: this.activeProvider,
+      config: { provider: this.activeProvider as AIModelConfig['provider'] },
+      caller: 'AIOrchestrator',
+    })
+
+    return result.response
   }
 
   /** 播放辅助 */
@@ -80,35 +119,36 @@ export class AIOrchestrator {
       playerState: 'playing',
     })
 
-    return this.provider!.complete(prompt)
+    const result = await modelGateway.complete({
+      prompt,
+      providerName: this.activeProvider,
+      config: { provider: this.activeProvider as AIModelConfig['provider'] },
+      caller: 'AIOrchestrator',
+    })
+
+    return result.response
   }
 
   /** 是否可用 */
   isAvailable(): boolean {
-    return this.initialized && this.provider?.isAvailable() === true
+    return this.initialized
+  }
+
+  /** 获取活跃 Provider 名 */
+  getActiveProvider(): string {
+    return this.activeProvider
   }
 
   /** 销毁 */
   async dispose(): Promise<void> {
-    if (this.provider) {
-      await this.provider.dispose()
-    }
+    await modelGateway.disposeAll()
     this.initialized = false
-    this.provider = null
   }
 
   // ── 内部 ──
 
-  private createProvider(type: string): IAIProvider {
-    switch (type) {
-      case 'mock':
-      default:
-        return new MockAIProvider()
-    }
-  }
-
   private ensureInitialized(): void {
-    if (!this.initialized || !this.provider) {
+    if (!this.initialized) {
       throw new Error('AI Orchestrator not initialized. Ensure pb5.ai flag is enabled.')
     }
   }

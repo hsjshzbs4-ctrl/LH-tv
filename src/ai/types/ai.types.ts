@@ -58,10 +58,16 @@ export interface PromptTemplate {
 
 /** AI 模型配置 */
 export interface AIModelConfig {
-  provider: 'mock' | 'dummy'
+  /** Provider 标识 (PB6: expanded to real providers) */
+  provider: 'mock' | 'openai' | 'anthropic' | 'google' | 'ollama' | 'custom'
   model?: string
   apiKey?: string
   endpoint?: string
+  /** 模型参数 */
+  temperature?: number
+  maxTokens?: number
+  topP?: number
+  timeout?: number
 }
 
 /** AI Provider 接口 */
