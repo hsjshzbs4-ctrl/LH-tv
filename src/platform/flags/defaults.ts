@@ -62,6 +62,15 @@ export const PB5_DEFAULT_FLAGS: FeatureFlag[] = [
     runtimeToggle: true,
     dependencies: ['pb5.data'],
   },
+  // ── PB6 AI Era ──
+  {
+    key: 'pb6.ai',
+    state: FeatureState.OFF,
+    description: 'PB6 AI Era — real model providers (OpenAI/Anthropic/Ollama)',
+    subsystem: PB5Subsystem.AI,
+    runtimeToggle: true,
+    dependencies: ['pb5.ai'],
+  },
 ]
 
 /** 按 key 快速索引 */

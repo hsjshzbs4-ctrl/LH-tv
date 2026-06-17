@@ -38,6 +38,7 @@ import SearchPanel from '@/components/search/SearchPanel.vue'
 import Toast from '@/components/common/Toast.vue'
 import { useAppStore } from '@/stores/app'
 import { useUserStore } from '@/stores/user'
+import { usePlatformStore } from '@/stores/platformStore'
 import { useKeyboard } from '@/composables/useKeyboard'
 import { providerHost } from '@/provider-host'
 import { featureFlagManager } from '@platform/flags'
@@ -47,6 +48,7 @@ import AIChatPanel from '@/ai/ui/AIChatPanel.vue'
 
 const appStore = useAppStore()
 const userStore = useUserStore()
+const platformStore = usePlatformStore()
 const aiPanelOpen = ref(false)
 
 onMounted(async () => {
@@ -61,6 +63,7 @@ onMounted(async () => {
     await featureFlagManager.initialize()
     if (featureFlagManager.isEnabled('pb5.ai')) {
       await aiOrchestrator.initialize()
+      platformStore.setAIAvailable(aiOrchestrator.isAvailable())
     }
   } catch {
     // AI 初始化失败不阻断应用
