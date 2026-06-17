@@ -50,7 +50,9 @@ export default defineConfig({
     resolve: {
       alias: {
         '@': resolve(__dirname, 'src'),
-        '@developer-platform': resolve(__dirname, 'developer-platform')
+        '@developer-platform': resolve(__dirname, 'developer-platform'),
+        '@platform': resolve(__dirname, 'src/platform'),
+        '@ai': resolve(__dirname, 'src/ai'),
       }
     }
   }
