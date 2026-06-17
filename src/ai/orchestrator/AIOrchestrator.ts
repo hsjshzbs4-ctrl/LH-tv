@@ -24,7 +24,7 @@ export class AIOrchestrator {
 
   /** 初始化 — 注册 Provider + Tools + Memory */
   async initialize(config?: AIModelConfig): Promise<void> {
-    if (!featureFlagManager.isEnabled('pb5.ai')) return
+    if (!featureFlagManager.isEnabled('pb6.ai')) return
     if (this.initialized) return
 
     const providerConfig = config ?? { provider: 'mock' }
@@ -222,7 +222,7 @@ export class AIOrchestrator {
 
   private ensureInitialized(): void {
     if (!this.initialized) {
-      throw new Error('AI Orchestrator not initialized. Ensure pb5.ai flag is enabled.')
+      throw new Error('AI Orchestrator not initialized. Ensure pb6.ai flag is enabled.')
     }
   }
 }

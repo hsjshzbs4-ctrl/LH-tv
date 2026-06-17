@@ -79,7 +79,7 @@ export class ModelGateway {
 
     // 2. Feature Flag 检查
     if (!AIProviderPolicy.isFeatureEnabled()) {
-      throw new Error('AI features are disabled (pb5.ai = OFF)')
+      throw new Error('AI features are disabled (pb6.ai = OFF)')
     }
 
     // 3. Provider 存在性检查

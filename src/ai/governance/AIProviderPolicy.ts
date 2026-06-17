@@ -75,7 +75,7 @@ export class AIProviderPolicy {
    * 验证 Provider 是否在活跃的 FeatureFlag 下可用
    */
   static isFeatureEnabled(): boolean {
-    return featureFlagManager.isEnabled('pb5.ai')
+    return featureFlagManager.isEnabled('pb6.ai')
   }
 
   /** 获取 Provider 白名单 */

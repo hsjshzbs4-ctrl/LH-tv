@@ -14,6 +14,9 @@ export default defineConfig({
       '@platform': resolve(__dirname, 'src/platform'),
       '@ai': resolve(__dirname, 'src/ai'),
       '@ecosystem': resolve(__dirname, 'src/ecosystem'),
+      '@community': resolve(__dirname, 'src/community'),
+      '@enterprise': resolve(__dirname, 'src/enterprise'),
+      '@governance': resolve(__dirname, 'src/governance'),
     },
   },
   test: {
@@ -33,6 +36,9 @@ export default defineConfig({
       'tests/developer-platform/**/*.spec.ts',
       'tests/performance/**/*.spec.ts',
       'tests/unit/ecosystem/**/*.spec.ts',
+      'tests/unit/community/**/*.spec.ts',
+      'tests/unit/enterprise/**/*.spec.ts',
+      'tests/unit/governance/**/*.spec.ts',
     ],
     // 全局 setup 在每个测试文件前运行
     setupFiles: [

@@ -37,6 +37,9 @@ export enum PB5Subsystem {
   DATA = 'data',
   DASHBOARD = 'dashboard',
   ECOSYSTEM = 'ecosystem',
+  COMMUNITY = 'community',
+  ENTERPRISE = 'enterprise',
+  GOVERNANCE = 'governance',
 }
 
 /** Flag 覆盖 — 用于开发/调试时临时改变 flag 状态 */

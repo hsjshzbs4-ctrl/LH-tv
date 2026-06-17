@@ -22,7 +22,10 @@
       "@developer-platform/*": ["developer-platform/*"],
       "@platform/*": ["src/platform/*"],
       "@ai/*": ["src/ai/*"],
-      "@ecosystem/*": ["src/ecosystem/*"]
+      "@ecosystem/*": ["src/ecosystem/*"],
+      "@community/*": ["src/community/*"],
+      "@enterprise/*": ["src/enterprise/*"],
+      "@governance/*": ["src/governance/*"]
     },
     "types": ["electron-vite/node"]
   },

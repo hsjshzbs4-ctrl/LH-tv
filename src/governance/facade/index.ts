@@ -1,0 +1,1 @@
+export { GovernanceFacade } from './GovernanceFacade'

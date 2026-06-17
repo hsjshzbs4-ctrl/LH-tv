@@ -54,6 +54,9 @@ export default defineConfig({
         '@platform': resolve(__dirname, 'src/platform'),
         '@ai': resolve(__dirname, 'src/ai'),
         '@ecosystem': resolve(__dirname, 'src/ecosystem'),
+        '@community': resolve(__dirname, 'src/community'),
+        '@enterprise': resolve(__dirname, 'src/enterprise'),
+        '@governance': resolve(__dirname, 'src/governance'),
       }
     }
   }

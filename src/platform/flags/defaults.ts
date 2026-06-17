@@ -80,6 +80,30 @@ export const PB5_DEFAULT_FLAGS: FeatureFlag[] = [
     runtimeToggle: true,
     dependencies: ['pb6.ai'],
   },
+  {
+    key: 'pb7.community',
+    state: FeatureState.OFF,
+    description: 'PB7 Community Platform — shared templates, agents, ratings, and social features',
+    subsystem: PB5Subsystem.COMMUNITY,
+    runtimeToggle: true,
+    dependencies: ['pb7.extension'],
+  },
+  {
+    key: 'pb7.enterprise',
+    state: FeatureState.OFF,
+    description: 'PB7 Enterprise Integration — SSO/LDAP/SCIM/RBAC/Audit/Compliance/Organization',
+    subsystem: PB5Subsystem.ENTERPRISE,
+    runtimeToggle: true,
+    dependencies: ['pb7.community'],
+  },
+  {
+    key: 'pb7.governance',
+    state: FeatureState.OFF,
+    description: 'PB7 Ecosystem Governance Policy — unified Policy/Certification/Audit/Metrics/EventBus',
+    subsystem: PB5Subsystem.GOVERNANCE,
+    runtimeToggle: true,
+    dependencies: ['pb7.enterprise'],
+  },
 ]
 
 /** 按 key 快速索引 */

@@ -54,7 +54,7 @@ async function send() {
     } else {
       messages.value.push({
         role: 'assistant',
-        content: '[PB6] AI 未启用。请在设置中开启 pb5.ai Feature Flag 或配置 AI Provider。',
+        content: '[PB6] AI 未启用。请在设置中开启 pb6.ai Feature Flag 或配置 AI Provider。',
       })
     }
   } catch (err) {

@@ -1,0 +1,5 @@
+export { CloudAdapter } from './CloudAdapter'
+export { ClusterAdapter } from './ClusterAdapter'
+export { SyncAdapter } from './SyncAdapter'
+export { TelemetryAdapter } from './TelemetryAdapter'
+export { AnalyticsAdapter } from './AnalyticsAdapter'
