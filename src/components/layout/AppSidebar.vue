@@ -7,8 +7,42 @@
     @mouseleave="appStore.sidebarHovered = false"
   >
     <div class="sidebar-nav">
+      <!-- 首页 -->
       <router-link
         v-for="item in navItems"
+        :key="item.path"
+        :to="item.path"
+        class="sidebar-item"
+        :class="{ active: isActive(item.path) }"
+        :title="appStore.sidebarCollapsed ? item.label : ''"
+      >
+        <span class="sidebar-icon">{{ item.icon }}</span>
+        <span class="sidebar-label">{{ item.label }}</span>
+        <span class="sidebar-indicator" v-if="isActive(item.path)"></span>
+      </router-link>
+
+      <div class="sidebar-divider" />
+      <div class="sidebar-section-label">影视分类</div>
+
+      <!-- 影视分类 -->
+      <router-link
+        v-for="item in videoCategories"
+        :key="item.path"
+        :to="item.path"
+        class="sidebar-item"
+        :class="{ active: isActive(item.path) }"
+        :title="appStore.sidebarCollapsed ? item.label : ''"
+      >
+        <span class="sidebar-icon">{{ item.icon }}</span>
+        <span class="sidebar-label">{{ item.label }}</span>
+        <span class="sidebar-indicator" v-if="isActive(item.path)"></span>
+      </router-link>
+
+      <div class="sidebar-divider" />
+
+      <!-- 工具 -->
+      <router-link
+        v-for="item in toolItems"
         :key="item.path"
         :to="item.path"
         class="sidebar-item"
@@ -45,9 +79,16 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { path: '/', label: '首页', icon: '🏠' },
+]
+
+// 影视分类
+const videoCategories: NavItem[] = [
+  { path: '/anime', label: '动漫', icon: '🎌' },
   { path: '/tv', label: '电视剧', icon: '📺' },
   { path: '/movies', label: '电影', icon: '🎬' },
-  { path: '/anime', label: '动漫', icon: '🎌' },
+]
+
+const toolItems: NavItem[] = [
   { path: '/search', label: '搜索', icon: '🔍' },
   { path: '/downloads', label: '下载管理', icon: '⬇️' },
   { path: '/library', label: '本地库', icon: '📥' },
@@ -55,7 +96,7 @@ const navItems: NavItem[] = [
   { path: '/history', label: '历史', icon: '🕐' },
   { path: '/marketplace', label: '插件市场', icon: '🧩' },
   { path: '/developer', label: '开发者', icon: '🛠️' },
-  { path: '/settings', label: '设置', icon: '⚙️' }
+  { path: '/settings', label: '设置', icon: '⚙️' },
 ]
 
 function isActive(path: string): boolean {
@@ -143,6 +184,29 @@ function isActive(path: string): boolean {
 .collapsed .sidebar-label {
   opacity: 0;
   width: 0;
+}
+
+.sidebar-divider {
+  height: 1px;
+  background: var(--color-border);
+  margin: 4px 8px;
+}
+
+.sidebar-section-label {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  padding: 4px 12px 2px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.collapsed .sidebar-section-label {
+  display: none;
+}
+
+.collapsed .sidebar-divider {
+  margin: 2px 4px;
 }
 
 .sidebar-bottom {
