@@ -6,6 +6,9 @@ import { promptManager } from '../prompt/PromptManager'
 import { conversationManager } from '../conversation/ConversationManager'
 import { modelGateway } from '../provider/ModelGateway'
 import { MockAIProvider } from '../provider/MockAIProvider'
+import { OpenAIProvider } from '../provider/OpenAIProvider'
+import { AnthropicProvider } from '../provider/AnthropicProvider'
+import { OllamaProvider } from '../provider/OllamaProvider'
 import { contextEngine } from '../context/ContextEngine'
 import { toolRegistry } from '../tools/registry/ToolRegistry'
 import { invocationPipeline } from '../tools/pipeline/InvocationPipeline'
@@ -13,6 +16,7 @@ import { SearchTool } from '../tools/tools/SearchTool'
 import { PlaybackInfoTool, PlaybackControlTool } from '../tools/tools/PlaybackTool'
 import { memoryStore } from '../memory/store/MemoryStore'
 import { featureFlagManager } from '@platform/flags'
+import { storageService } from '@/shared/storage/storage.service'
 
 export class AIOrchestrator {
   private initialized = false
@@ -25,6 +29,23 @@ export class AIOrchestrator {
 
     const providerConfig = config ?? { provider: 'mock' }
 
+    // 0. 从持久化加载 AI 配置
+    let savedConfig: Record<string, unknown> | null = null
+    try {
+      const settings = await storageService.getSettings()
+      const raw = settings.pb6_ai_config
+      if (raw && typeof raw === 'string') {
+        savedConfig = JSON.parse(raw)
+        if (savedConfig?.provider && savedConfig.provider !== providerConfig.provider) {
+          providerConfig.provider = savedConfig.provider as AIModelConfig['provider']
+          if (savedConfig.apiKey) providerConfig.apiKey = savedConfig.apiKey as string
+          if (savedConfig.model) providerConfig.model = savedConfig.model as string
+          if (savedConfig.temperature) providerConfig.temperature = savedConfig.temperature as number
+          if (savedConfig.maxTokens) providerConfig.maxTokens = savedConfig.maxTokens as number
+        }
+      }
+    } catch { /* no saved config */ }
+
     // 1. 初始化 MemoryStore
     await memoryStore.initialize()
 
@@ -32,8 +53,17 @@ export class AIOrchestrator {
     modelGateway.register('mock', new MockAIProvider())
     await modelGateway.initializeProvider('mock', { provider: 'mock' })
 
-    if (providerConfig.provider !== 'mock') {
-      this.activeProvider = providerConfig.provider
+    // 注册真实 Provider
+    modelGateway.register('openai', new OpenAIProvider())
+    modelGateway.register('anthropic', new AnthropicProvider())
+    modelGateway.register('ollama', new OllamaProvider())
+
+    // 初始化已配置的 Provider
+    if (providerConfig.provider !== 'mock' && providerConfig.apiKey) {
+      try {
+        await modelGateway.initializeProvider(providerConfig.provider, providerConfig)
+        this.activeProvider = providerConfig.provider
+      } catch { /* provider unavailable, stay with mock */ }
     }
 
     // 3. 注册 Tools 到 ToolRegistry
