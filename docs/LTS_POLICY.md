@@ -1,154 +1,311 @@
-# LH-TV v3.0 LTS Maintenance Policy
+# LH-TV v3.0.x LTS
 
-## Claude Execution Specification (PB8 Disabled Edition)
+# Claude Execution Specification
+
+## PB7 Foundation Long-Term Maintenance Edition
 
 Version: v3.0.1 LTS
 Branch: release/v3.0.x
 Status: Production Stable
-Last Update: 2026-06-18
+Effective: Immediately
 
 ---
 
-# 一、项目状态
+# 1. Project Status
 
-LH-TV 已完成 PB7 全部开发。
+LH-TV 已完成 PB7 全部开发阶段。
 
-当前项目进入：
+PB7 Foundation 已正式冻结。
 
-> **LTS（Long Term Support）长期维护阶段**
+当前项目生命周期进入：
 
-目标：
+> **Long Term Support（LTS）维护阶段**
 
-* 保持线上稳定
+项目目标：
+
+* 保持长期稳定运行
 * 修复 Bug
-* 修复安全问题
+* 修复安全漏洞
 * 提高代码质量
-* 优化性能
-* 完善测试
+* 提高性能
+* 增强测试覆盖率
 * 完善文档
 
-**不再进行 PB8 或后续架构开发。**
+除此之外，不进行任何功能扩展。
 
 ---
 
-# 二、当前版本
+# 2. Current Branch
 
-Branch:
+唯一维护分支：
 
 release/v3.0.x
 
-Tag:
+当前版本：
 
 v3.0.1
 
-Status:
+所有维护工作必须基于：
 
-Production Stable
+release/v3.0.x
 
-Git Flow：
+进行。
 
-main
-└── release/v3.0.x (Current LTS)
-
-PB8 分支全部冻结，不允许开发。
+禁止切换开发主线。
 
 ---
 
-# 三、最高原则
+# 3. PB7 Foundation Status
 
-稳定性 > 可维护性 > 性能 > 可读性 > 可扩展性
+PB7 已全部完成：
 
-禁止为了"更先进"而修改稳定代码。
+* PB7-S3 Runtime Foundation
+* PB7-S4 Community Platform
+* PB7-S5 Enterprise Integration
+* PB7-S5.1 Governance Enhancement
+* PB7-S6 Governance Policy
 
-禁止为了"未来扩展"增加复杂度。
+状态：
 
-保持 API 永久兼容。
+CERTIFIED
+
+Production Ready
+
+Foundation Complete
+
+任何 PB7 架构默认视为稳定设计。
+
+不得重新设计。
+
+---
+
+# 4. PB8 Policy
+
+PB8：
+
+永久暂停。
+
+Claude 必须默认：
+
+PB8 不存在。
+
+禁止：
+
+Cloud
+
+Cluster
+
+Sync
+
+Telemetry
+
+Analytics
+
+Multi-node
+
+Distributed
+
+Cloud Runtime
+
+Cloud Governance
+
+Cloud Adapter
+
+Cloud Registry
+
+Cloud Pipeline
+
+Cloud Feature
+
+Cloud API
+
+Cloud Architecture
+
+任何 PB8 提议：
+
+直接拒绝。
 
 ---
 
-# 四、Claude 工作范围
+# 5. LTS Goal
 
-Claude 允许：
+LTS 唯一目标：
 
-✓ Bug Fix
+稳定
 
-✓ Security Fix
+兼容
 
-✓ Memory Leak 修复
+维护
 
-✓ Null Check
+修复
 
-✓ Crash Fix
+优化
 
-✓ Exception Fix
-
-✓ 性能优化
-
-✓ 测试补充
-
-✓ 文档更新
-
-✓ 注释完善
-
-✓ 死代码分析
-
-✓ 内部 Refactor（行为一致）
-
-✓ 类型优化
-
-✓ 日志优化
-
-✓ 构建优化
-
-✓ Package 更新（Patch）
-
-✓ Minor Upgrade（需要评估）
+绝不增加复杂度。
 
 ---
+
+# 6. Priority
+
+稳定性
+
+>
+
+安全性
+
+>
+
+兼容性
+
+>
+
+性能
+
+>
+
+代码质量
+
+>
+
+可维护性
+
+>
+
+可扩展性
+
+禁止为了未来扩展修改当前稳定代码。
+
+---
+
+# 7. Allowed Work
+
+Claude 可以执行：
+
+Bug Fix
+
+Security Fix
+
+Crash Fix
+
+Null Check
+
+Boundary Check
+
+Exception Fix
+
+Memory Leak
+
+Performance Optimization
+
+Type Optimization
+
+Code Cleanup
+
+Documentation Update
+
+Comment Update
+
+Unit Test
+
+Integration Test
+
+Regression Test
+
+Internal Refactor
+
+Dead Code Analysis
+
+Bundle Analysis
+
+Build Optimization
+
+Patch Dependency Upgrade
+
+Minor Dependency Evaluation
+
+Security Audit
+
+Dependency Audit
+
+Lint Configuration
+
+CI Improvement
+
+Release Report
+
+Maintenance Report
+
+LTS Sprint Report
+
+---
+
+# 8. Forbidden Work
 
 Claude 禁止：
 
-✗ PB8 Cloud
+新增功能
 
-✗ Cluster
+新增模块
 
-✗ Sync
+新增业务
 
-✗ Telemetry
+新增 Feature Flag
 
-✗ Analytics
+新增 Runtime
 
-✗ Runtime Rewrite
+新增 Governance Layer
 
-✗ Governance Rewrite
+新增 Pipeline
 
-✗ 新架构
+新增 Registry
 
-✗ 新 Feature
+新增 EventBus
 
-✗ Breaking Change
+新增 Adapter
 
-✗ API 修改
+新增 Cloud
 
-✗ 数据结构修改
+新增 Sync
 
-✗ Feature Flag 增加
+新增 Cluster
 
-✗ Pipeline 修改
+新增 Telemetry
 
-✗ Registry 修改
+新增 Analytics
 
-✗ EventBus 改写
+新增 Enterprise Feature
 
-✗ Cloud Adapter
+新增 Community Feature
 
-✗ Enterprise 新能力
+新增 Marketplace Feature
 
-✗ Community 新能力
+新增 API
+
+修改 API
+
+删除 API
+
+修改 Contract
+
+修改 Pipeline
+
+修改 Runtime Flow
+
+修改 Registry Flow
+
+Breaking Change
+
+Architecture Rewrite
+
+PB8 Development
+
+任何涉及上述内容：
+
+立即停止。
 
 ---
 
-# 五、Frozen Zone
+# 9. Frozen Zone
 
 以下目录永久冻结：
 
@@ -162,113 +319,167 @@ src/enterprise/**
 
 src/governance/**
 
-任何修改必须满足：
+禁止修改。
 
-Bug Fix
+例外：
 
-AND
+真实 Bug
 
-行为一致
+真实 Security
 
-AND
+真实 Crash
 
-Public API 不变
+真实 Memory Leak
+
+并且：
+
+行为保持一致
+
+Public API 保持一致
 
 否则禁止修改。
 
 ---
 
-# 六、允许修改目录
+# 10. Public API Rule
 
-允许：
+Public Export：
 
-electron/
+永久兼容。
 
-renderer/
+禁止：
 
-shared/
+Rename
 
-utils/
+Delete
 
-scripts/
+Move
 
-docs/
+Replace
 
-tests/
+Behavior Change
 
-package.json
+Contract Change
 
-package-lock.json
+Signature Change
 
-eslint.config.js
+Parameter Change
 
-vitest.config.ts
-
-仅允许：
-
-维护
-
-修复
-
-优化
-
-测试
-
-文档
-
-不得新增业务功能。
+Return Type Change
 
 ---
 
-# 七、依赖升级策略
+# 11. Internal Refactor Rule
+
+允许：
+
+Extract Function
+
+Split Function
+
+Rename Private Variable
+
+Rename Local Variable
+
+Extract Helper
+
+Inline Helper
+
+Reduce Duplication
+
+Improve Type
+
+Improve Readability
+
+要求：
+
+Before == After
+
+行为一致。
+
+---
+
+# 12. Dead Code Rule
+
+允许：
+
+删除 private unused
+
+删除 unreachable code
+
+删除 duplicate code
+
+删除 internal helper
+
+禁止：
+
+删除 public export
+
+删除 barrel export
+
+删除 compatibility API
+
+删除 Frozen Zone export
+
+如果工具报告 unused：
+
+必须人工确认。
+
+不得自动删除。
+
+---
+
+# 13. Dependency Rule
 
 允许：
 
 Patch：
 
-1.2.3 → 1.2.4
+x.y.z → x.y.(z+1)
 
-安全升级：
+Security Patch
 
 npm audit fix
 
-Wanted Version：
+Patch Upgrade
 
-Vue Patch
+允许评估：
 
-Vitest Patch
+Minor Upgrade
 
-Playwright Patch
+必须验证：
 
-Happy-dom Patch
+Build
+
+Tests
+
+TypeCheck
 
 禁止：
 
 Electron Major
 
-Electron Builder Major
-
 TypeScript Major
 
 Vue Router Major
 
-Vite Major
+Electron Builder Major
 
 Electron-Vite Major
 
-任何 Major Upgrade 必须拒绝。
+Vite Major
+
+任何 Major Upgrade：
+
+默认拒绝。
 
 ---
 
-# 八、Security Policy
-
-优先级：
+# 14. Security Rule
 
 P0：
 
 Crash
-
-Data Loss
 
 RCE
 
@@ -286,81 +497,51 @@ DOS
 
 Memory Leak
 
-立即评估。
+尽快修复。
 
 P2：
 
-Performance
-
 Dead Code
 
-Refactor
+Performance
 
-按 Sprint 修复。
+Cleanup
+
+Sprint 修复。
 
 P3：
 
-文档
+Docs
 
-格式
+Comments
 
-注释
+Formatting
 
 长期维护。
 
 ---
 
-# 九、Dead Code Policy
+# 15. Performance Rule
 
 允许：
-
-删除 private unused
-
-删除 internal helper
-
-删除 unreachable code
-
-删除 duplicate function
-
-禁止：
-
-删除 public export
-
-删除 barrel export
-
-删除 Frozen Zone API
-
-删除未来兼容接口
-
-如果 ts-prune 报 unused：
-
-必须人工确认。
-
-不得自动删除。
-
----
-
-# 十、Performance Policy
-
-允许：
-
-缓存优化
 
 Lazy Import
 
-减少对象创建
+Cache
 
-减少 JSON Parse
+Reduce Allocation
 
-减少 IO
+Reduce Parse
 
-减少重复计算
+Reduce IO
 
-减少 Config 解析
+Reduce JSON
 
-Build 优化
+Reduce Config Load
 
-Bundle 分析
+Bundle Optimization
+
+Startup Optimization
 
 禁止：
 
@@ -368,51 +549,13 @@ Bundle 分析
 
 禁止：
 
-影响 Public API。
+影响 API。
 
 ---
 
-# 十一、Refactor Policy
+# 16. Testing Rule
 
-允许：
-
-拆函数
-
-提取变量
-
-重命名 private
-
-提取 helper
-
-统一类型
-
-删除重复代码
-
-要求：
-
-Before == After
-
-行为一致。
-
-不得修改：
-
-API
-
-Event
-
-Pipeline
-
-Registry
-
-Facade
-
-Contract
-
----
-
-# 十二、Testing Policy
-
-所有修改必须执行：
+每次修改必须执行：
 
 npm run typecheck
 
@@ -424,77 +567,93 @@ npx madge --circular src
 
 npm run lint
 
-全部 PASS 才允许提交。
+全部 PASS：
+
+允许提交。
+
+否则：
+
+继续修复。
 
 ---
 
-# 十三、Release Policy
+# 17. Release Rule
 
-每次 Release：
+Release 必须满足：
 
-TypeScript == 0
+TypeScript = 0
 
 Build PASS
 
 Tests PASS
 
-Circular == 0
+Circular = 0
 
 Lint PASS
 
 Working Tree Clean
 
-Tag 完成
+Release Report Ready
 
-Release Note 完成
+Tag Ready
 
-GitHub Release 完成
+GitHub Release Ready
 
 否则禁止发布。
 
 ---
 
-# 十四、Commit Convention
+# 18. Commit Convention
 
 Bug：
 
 fix(scope): description
 
-维护：
+Security：
 
-chore(lts): description
+fix(security): description
 
-文档：
-
-docs(lts): description
-
-性能：
+Performance：
 
 perf(scope): description
 
-测试：
-
-test(scope): description
-
-重构：
+Refactor：
 
 refactor(scope): description
+
+Maintenance：
+
+chore(lts): description
+
+Docs：
+
+docs(lts): description
+
+Test：
+
+test(scope): description
 
 禁止：
 
 feat:
 
-除非真正新增功能。
+除非明确批准新增功能。
 
-LTS 原则上不允许 feat。
+LTS 默认禁止 feat。
 
 ---
 
-# 十五、Sprint Workflow
+# 19. Sprint Workflow
 
-每次 Sprint：
+需求
+
+↓
 
 分析
+
+↓
+
+设计
 
 ↓
 
@@ -510,7 +669,7 @@ Build
 
 ↓
 
-Test
+Tests
 
 ↓
 
@@ -534,102 +693,125 @@ Tag（如需要）
 
 ↓
 
-GitHub Release（如需要）
+Release（如需要）
+
+↓
+
+Documentation Update
 
 ---
 
-# 十六、Claude 执行原则
+# 20. Claude Default Behavior
 
-Claude 不得主动：
+Claude 默认应：
 
-开发 PB8
+优先稳定
 
-扩展架构
+优先兼容
 
-修改 Governance
+优先修复
 
-增加 Feature
+优先优化
 
-增加 Flag
+优先测试
 
-增加 Adapter
+优先文档
 
-增加 Pipeline
+优先维护
 
-增加 Registry
+不得主动：
 
-增加 Runtime Layer
+提出 PB8
 
-Claude 应始终优先：
+提出 Cloud
 
-稳定
+提出 Runtime Rewrite
 
-兼容
+提出 Governance Rewrite
 
-维护
+提出 Pipeline Rewrite
 
-优化
+提出 Registry Rewrite
 
-修复
+提出 Architecture Upgrade
 
-文档
-
-测试
-
-代码质量
+提出 Breaking Change
 
 ---
 
-# 十七、最终原则
+# 21. Version Policy
 
-LH-TV 当前进入：
+仅允许：
+
+v3.0.2
+
+v3.0.3
+
+v3.0.4
+
+……
+
+采用 Patch Release。
+
+禁止：
+
+v3.1
+
+v4.0
+
+PB8
+
+Cloud Edition
+
+Experimental Edition
+
+Developer Preview
+
+Alpha
+
+Beta
+
+RC
+
+---
+
+# 22. Final Principle
+
+LH-TV 当前属于：
 
 Production LTS
 
-目标：
+PB7 Foundation 已完成。
 
-保持长期稳定运行。
+PB8 永久暂停。
 
-除 BugFix、安全修复、性能优化、代码质量维护外：
+Claude 必须始终认为：
 
-**拒绝一切新功能开发。**
+维护比开发更重要。
 
-PB8：
+稳定比扩展更重要。
 
-永久暂停。
+兼容比创新更重要。
 
-Claude 必须默认认为：
+除 BugFix、安全修复、性能优化、测试增强、文档完善、代码质量提升之外：
 
-PB7 Foundation 已完成且不可重构。
-
-任何建议涉及 PB8、Cloud、Cluster、Sync、Telemetry、Analytics、Governance 重构、Runtime 重构、Public API 修改，应直接拒绝执行，并保持 release/v3.0.x 的长期稳定性。
+**拒绝执行任何新功能、架构扩展或 PB8 相关开发。**
 
 ---
 
-# 十八、维护历史
+# 23. Maintenance History
 
-## Sprint #1 — 2026-06-18
+## v3.0.1 LTS Patch Release — 2026-06-18
 
-- ✅ ESLint + TypeScript/Vue linting 配置
-- ✅ 5 个 Patch 升级 (vitest, playwright, happy-dom, vue)
-- ✅ Bundle 分析 (Main/Preload/Renderer)
-- ✅ depcheck + ts-prune 初步分析
-- ⚠️ vue-tsc 3.x 阻止 (Major)
-- ⚠️ npm audit fix 网络超时
+| Sprint | Commit | Key Changes |
+|--------|--------|-------------|
+| #1 | aa9ae56 | ESLint, 5 patch upgrades, bundle analysis, depcheck |
+| #2 | ed9ba46 | 2 CVEs fixed, 66 lines dead code removed, security classification |
+| Release | a9b19b2 | v3.0.1 tag, GitHub Release with Portable + Setup + checksums |
+| Spec | 4a60409 | Enhanced Claude Execution Specification (this document) |
 
-## Sprint #2 — 2026-06-18
-
-- ✅ form-data + glob CVE 修复 (12→10 HIGH)
-- ✅ 66 行死代码删除 (config.ts 58% 缩减)
-- ✅ rollup-plugin-visualizer 移除 (24 子包)
-- ✅ vue-eslint-parser 显式依赖
-- ✅ P0/P1/P2 安全分类完成
-
-## v3.0.1 Release — 2026-06-18
-
-- Commit: a9b19b2
-- Tag: v3.0.1
-- Release: https://github.com/hsjshzbs4-ctrl/LH-tv/releases/tag/v3.0.1
-- Assets: Portable.exe + Setup.exe + checksums.txt
-- All gates passed | Frozen Zone unchanged | Public API unchanged
-- Status: Certified — Production Ready
+### Verification
+- TypeScript: 0 errors | Build: PASS | Tests: 242/2134
+- Circular: 0 | Lint: 0 errors
+- Frozen Zone: Unchanged | Public API: Unchanged
+- GitHub Release: https://github.com/hsjshzbs4-ctrl/LH-tv/releases/tag/v3.0.1
