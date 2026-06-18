@@ -1,8 +1,8 @@
 <!-- src/renderer/pages/CategoryPage.vue - PB1.5 统一分类页 -->
 <template>
   <div class="category-page">
-    <!-- 分类标签栏 -->
-    <div class="category-tabs">
+    <!-- 分类标签栏 — 仅在通用分类路由显示（侧边栏已有分类导航） -->
+    <div v-if="showMainTabs" class="category-tabs">
       <button
         v-for="cat in allCategories"
         :key="cat"
@@ -68,6 +68,10 @@ import type { ContentCategory } from '@/content'
 const router = useRouter()
 const route = useRoute()
 const store = useContentStore()
+
+// 侧边栏已有分类导航 → 带 meta.category 的具体路由不再显示顶部全分类标签
+const routeCategory = (route.meta?.category as ContentCategory) || undefined
+const showMainTabs = !routeCategory
 
 const allCategories = computed(() => categoryService.getAllCategories())
 
