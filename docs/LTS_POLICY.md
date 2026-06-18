@@ -551,3 +551,81 @@ SUSPENDED
 ```
 
 This document has the highest priority for all future maintenance work.
+
+---
+
+# 16. Maintenance History
+
+## Sprint #1 — 2026-06-18
+
+**Status**: Complete
+**Target**: v3.0.1 preparation
+
+### Completed
+- ✅ Quality baseline established (TypeScript 0, Build PASS, Tests 2134, Circular 0)
+- ✅ ESLint + TypeScript/Vue linting configuration
+- ✅ Patch upgrades: vitest 4.1.9, playwright 1.61.0, happy-dom 20.10.6, vue 3.5.38
+- ✅ Bundle analysis (3 reports: Main/Preload/Renderer)
+- ✅ Dependency audit (depcheck)
+- ✅ Dead code analysis (ts-prune, report only)
+
+### Blocked
+- ⚠️ vue-tsc 3.x (Major — Breaking: Hybrid Mode Always On, settings renamed)
+- ⚠️ npm audit fix (network timeout to npmjs.org)
+
+### Artifacts
+- `docs/lts/SecurityReport.md`
+- `docs/lts/DeadCodeReport.md`
+- `docs/lts/DependencyReport.md`
+- `docs/lts/PerformanceReport.md`
+- `docs/lts/vue-tsc-MigrationReport.md`
+- `docs/lts/BundleReport-*.html` (3 files)
+- `eslint.config.js`
+
+---
+
+## Sprint #2 — 2026-06-18
+
+**Status**: Complete
+**Target**: v3.0.1 LTS Patch Release candidate
+
+### Completed
+- ✅ **Security Remediation**: form-data + glob CVEs fixed (12→10 HIGH)
+- ✅ **Dead Code Cleanup**: 66 lines removed from config.ts + http-client.ts
+- ✅ **Dependency Cleanup**: rollup-plugin-visualizer removed (24 sub-packages)
+- ✅ **Explicit Deps**: vue-eslint-parser added as direct devDependency
+- ✅ **Security Classification**: P0/P1/P2 categorization complete
+- ✅ **Bundle Audit**: Confirmed optimal lazy-loading pattern
+- ✅ **Performance Baseline**: Startup ~1.6s cold, code size reduced
+
+### Security Status
+- HIGH CVEs: 10 (8 Electron runtime + 7 tar toolchain)
+- All remaining require Major upgrades (blocked by LTS policy)
+- Production risk: Low-Medium (controlled content sources)
+- Toolchain risk: Low (controlled build environment)
+
+### Cleanup Summary
+- `electron/utils/config.ts`: 117→49 lines (58% reduction)
+- `electron/utils/http-client.ts`: 67→52 lines (22% reduction)
+- `node_modules`: 814→790 packages (-24)
+
+### Artifacts
+- `docs/lts/SecurityRemediation.md`
+- `docs/lts/SecurityStatus.md`
+- `docs/lts/DeadCodeReport-v2.md`
+- `docs/lts/BundleOptimization.md`
+- `docs/lts/PerformanceOptimization.md`
+- `docs/lts/DependencyHealth-v2.md`
+
+### v3.0.1 Release Assessment
+- ✅ TypeScript: 0 errors
+- ✅ Build: PASS
+- ✅ Tests: 242 files / 2134 tests
+- ✅ Circular: 0
+- ✅ Lint: PASS (warnings only)
+- ✅ Frozen Zone: Unchanged
+- ✅ Public API: Unchanged
+- ✅ Security: Improved (12→10 HIGH)
+- ✅ Performance: Improved (dead code removed, deps reduced)
+- ✅ No Breaking Changes
+

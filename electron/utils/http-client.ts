@@ -49,18 +49,3 @@ export async function fetchWithTimeout(url: string, options: FetchOptions = {}):
   throw lastError ?? new Error('HTTP request failed')
 }
 
-export async function fetchJson<T>(url: string, options: FetchOptions = {}): Promise<T> {
-  const response = await fetchWithTimeout(url, options)
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status}: ${response.statusText}`)
-  }
-  return response.json() as Promise<T>
-}
-
-export async function fetchText(url: string, options: FetchOptions = {}): Promise<string> {
-  const response = await fetchWithTimeout(url, options)
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status}: ${response.statusText}`)
-  }
-  return response.text()
-}
